@@ -25,8 +25,8 @@ struct window_procs * install_middle_man(struct window_procs * windowprocs);
 
 /* Getter on the visible map 
  * Should reflect what a user would see on a tty 
- * Returns : the screen char representing the tile at x y, eg @.|-+# */
-int get_glyph(int x,int y);
+ * Returns : a single string containing whole tty */
+char *get_map();
 
 /* Return the height of the map */
 int get_map_height();

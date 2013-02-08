@@ -12,64 +12,55 @@
 #define MAX_MSG_SIZE  2000 
 #define MAX_CMD_SIZE  5
 
-int sockfd;
+int sockfd = -1;
 struct sockaddr bot_addr;
 socklen_t bot_addrlen;
 
 void open_socket (char *host, int port)
 {
-  struct sockaddr_in my_addr;
-  int sock = socket(AF_UNIX, SOCK_STREAM, 0);
-  if(sock == -1)
-    {
-      perror("socket()");
-      exit(errno);
-    } 
-  my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-  my_addr.sin_port = htons(port);
-  my_addr.sin_family = AF_INET;
-  
-  bind(sock,(struct sockaddr *) &my_addr,sizeof(struct sockaddr_in));
-  listen(sock,1);
-  sockfd = accept(sock,&bot_addr, &bot_addrlen);
-  close(sock);
-}
-static char *
-get_map(void)
-{
-	return "\0";
+	struct sockaddr_in my_addr;
+	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
+	if(sock == -1)
+	{
+		perror("socket()");
+		exit(errno);
+	} 
+	my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	my_addr.sin_port = htons(port);
+	my_addr.sin_family = AF_INET;
+
+	bind(sock,(struct sockaddr *) &my_addr,sizeof(struct sockaddr_in));
+	listen(sock,1);
+	sockfd = accept(sock,&bot_addr, &bot_addrlen);
+	close(sock);
 }
 
 int write_to_bot(char *msg)
 {
-  write(sockfd,msg,strlen(msg));
+	write(sockfd,msg,strlen(msg));
 }
 
-   static void
-   send_init(void)
-   {
-   char msg[MAX_MSG_SIZE];
-
-   snprintf(msg, MAX_MSG_SIZE, "START\nMAP_HEIGHT 22\nMAP_WIDTH 80\nSTART MAP\n%s\nEND MAP\nEND\n", get_map());
-
-// send msg on a socket to the bot
-}
-
-static void
-send_map(void)
+static void send_init(void)
 {
-char msg[MAX_MSG_SIZE] ;
-   snprintf(msg, MAX_MSG_SIZE, "START\nSTART MAP\n%s\nEND MAP\nEND\n", get_map());
+	char msg[MAX_MSG_SIZE];
+	char *map = get_map();
+	snprintf(msg, MAX_MSG_SIZE, "START\nMAP_HEIGHT 22\nMAP_WIDTH 80\nSTART MAP\n%s\nEND MAP\nEND\n", map);
+	write_to_bot(msg);
+}
 
-// send msg on a socket to the bot
+static void send_map(void)
+{
+	char msg[MAX_MSG_SIZE] ;
+	char *map = get_map();
+	snprintf(msg, MAX_MSG_SIZE, "START\nSTART MAP\n%s\nEND MAP\nEND\n", map);
+	write_to_bot(msg);
 }
 
 
 /* Give the size of the action keyword.
  * For exemple if botcmd is "MOVE SOUTH_WEST" then 4 is returned.
  */
-	static int
-action_len(char * botcmd)
+static int action_len(char * botcmd)
 {
 	int l = 0;
 	for (; botcmd[l] != '\0' && botcmd[l] != ' '; l++) ;
@@ -80,8 +71,7 @@ action_len(char * botcmd)
 /* Translate a direction in the bot format into a direction in Nethack format.
  * Return -1 if direction is invalid.
  */
-	static int
-botdir2nhdir(char * botdir)
+static int botdir2nhdir(char * botdir)
 {
 	if      (strcmp(botdir, "NORTH"     ) == 0) {
 		return 'k';
@@ -121,8 +111,7 @@ botdir2nhdir(char * botdir)
 /* Return a command understandable by Nethack's kernel.
  * The returned pointer should be freed afterwards.
  */
-char *
-botcmd_to_nhcmd(char * botcmd)
+char * botcmd_to_nhcmd(char * botcmd)
 {
 	int alen = action_len(botcmd);
 	char * nhcmd = malloc(MAX_CMD_SIZE * sizeof(char));
