@@ -1,0 +1,41 @@
+--- hacklib.c.old	2012-11-26 13:56:21.194427000 +0100
++++ hacklib.c	2012-11-26 14:04:23.034543000 +0100
+@@ -463,23 +463,31 @@
+ 	/* the types are different enough here that sweeping the different
+	 *  	 * routine names into one via #defines is even more confusing
+	 *  	  	 */
++	time_t seed = time(0);
++	FILE *seed_file = fopen("seed.txt","r");
++	char buffer[64];
++	memset(buffer,0,64);
++	if (seed_file){
++		fread(buffer,60,1,seed_file);	
++		seed = (time_t)atol(buffer);
++		fclose(seed_file);	
++	}
+ #ifdef RANDOM	/* srandom() from sys/share/random.c */
+-	srandom((unsigned int) time((time_t *)0));
++	srandom((unsigned int) seed);
+ #else
+ # if defined(__APPLE__) || defined(BSD) || defined(LINUX) || defined(ULTRIX) || defined(CYGWIN32) /* system srandom() */
+ #  if defined(BSD) && !defined(POSIX_TYPES)
+ #   if defined(SUNOS4)
+ 	(void)
+ #   endif
+-		srandom((int) time((long *)0));
++		srandom((int) seed);
+ #  else
+-		srandom((int) time((time_t *)0));
++		srandom((int) seed);
+ #  endif
+ # else
+ #  ifdef UNIX	/* system srand48() */
+-	srand48((long) time((time_t *)0));
++	srand48((long) seed);
+ #  else		/* poor quality system routine */
+-	srand((int) time((time_t *)0));
++	srand((int) seed);
+ #  endif
+ # endif
+ #endif
+

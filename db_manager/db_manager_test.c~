@@ -1,0 +1,84 @@
+#include"sqlite3.h"
+#include"db_manager.h"
+
+
+int callback(void* NotUsed, int argc, char **argv, char **azColname)
+{
+  int i;
+  for(i=0;i<argc;i++)
+    {
+      printf("%s = %s\n", azColname[i],argv[i] ? argv[i] : "NULL");
+    }
+  printf("\n");
+  return 0;
+}
+
+sqlite3* test_creation_DB()
+{
+  sqlite3* db;
+  
+  db=init_DB(test);
+  
+  
+  if(db!=NULL)
+    printf("creation de la base de donnée: OK");
+  else 
+    printf("creation de la base de donnée: KO");      
+
+  return db;
+  
+}
+
+void test_creation_table(db)
+{
+  if(create_table(db,"table_test","test1,test2,test3"))
+    printf("creation de la table: OK");
+  else
+    printf("creation de la table: KO");
+}
+
+void test_insertion(db)
+{
+  if(write_DB(db,"table_test","value1,value2,value3"))
+    printf("insertion dans la table: OK");
+  else
+    printf("insertion dans la table: KO");
+}
+
+void test_selection(db)
+{
+  if(search_DB(db,"table_test","*"))
+    printf("selection dans la table: OK");
+  else
+    printf("selection dans la table: KO");
+}
+
+void test_fermeture(db)
+{
+  if(close_db(db))
+    printf("fermeture de la table: OK");
+  else
+    printf("fermeture de la table: KO");
+}
+
+void test_suppression(db)
+{
+  if(delete_DB(db))
+    printf("suppression de la base de donnée: OK");
+  
+  else
+    printf("suppression de la base de donnée: KO");
+}
+
+void main()
+{
+  void* db;
+  
+  db=test_creation_DB();
+  test_creation_table(db);
+  test_insertion(db);
+  test_selection(db);
+  test_fermeture(db);
+
+  
+}

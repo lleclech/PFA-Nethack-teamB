@@ -1,0 +1,5 @@
+AJOUT MIDDLEMAN
+
+Patcher depuis la racine avec
+$ patch -p0 < pfa-src/middleman.patch
+et relancer nethack-3.4.3/src/Makefile
