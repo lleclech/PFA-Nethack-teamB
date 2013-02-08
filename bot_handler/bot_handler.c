@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <unistd.h>
+#include <errno.h>
 #include "bot_handler.h"
 
 #define MAP_SIZE      1760 // 22*80
@@ -8,26 +13,31 @@
 #define MAX_CMD_SIZE  5
 
 int sockfd;
-struct sockaddr bot_addr
+struct sockaddr bot_addr;
 socklen_t bot_addrlen;
 
 void open_socket (char *host, int port)
 {
-  struct sockaddr_un my_addr;
+  struct sockaddr_in my_addr;
   int sock = socket(AF_UNIX, SOCK_STREAM, 0);
-  if(sock == INVALID_SOCKET)
+  if(sock == -1)
     {
       perror("socket()");
       exit(errno);
     } 
-  my_addr.sin_addr = htonl(INADDR_ANY);
+  my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
   my_addr.sin_port = htons(port);
-  my_addr.sin_family = AF_UNIX;
+  my_addr.sin_family = AF_INET;
   
-  bind(sock,struct sockaddr *) &my_addr,sizeof(struct sockaddr_un));
+  bind(sock,(struct sockaddr *) &my_addr,sizeof(struct sockaddr_in));
   listen(sock,1);
-  sockfd = accept(sock,&bot_addr, &bot_addr_size);
+  sockfd = accept(sock,&bot_addr, &bot_addrlen);
   close(sock);
+}
+static char *
+get_map(void)
+{
+	return "\0";
 }
 
 int write_to_bot(char *msg)
@@ -38,15 +48,9 @@ int write_to_bot(char *msg)
    static void
    send_init(void)
    {
-   char msg[MAX_MSG_SIZE] = "";
+   char msg[MAX_MSG_SIZE];
 
-   snprintf(msg, MAX_MSG_SIZE, "START\n
-   MAP_HEIGHT 22\n
-   MAP_WIDTH 80\n
-   START MAP\n
-   %s\n
-   END MAP\n
-   END\n", get_map());
+   snprintf(msg, MAX_MSG_SIZE, "START\nMAP_HEIGHT 22\nMAP_WIDTH 80\nSTART MAP\n%s\nEND MAP\nEND\n", get_map());
 
 // send msg on a socket to the bot
 }
@@ -54,22 +58,12 @@ int write_to_bot(char *msg)
 static void
 send_map(void)
 {
-char msg[MAX_MSG_SIZE] = "";
-
-snprintf(msg, MAX_MSG_SIZE, "START\n
-START MAP\n
-%s\n
-END MAP\n
-END\n", get_map());
+char msg[MAX_MSG_SIZE] ;
+   snprintf(msg, MAX_MSG_SIZE, "START\nSTART MAP\n%s\nEND MAP\nEND\n", get_map());
 
 // send msg on a socket to the bot
 }
 
-static void
-get_map(void)
-{
-
-}
 
 /* Give the size of the action keyword.
  * For exemple if botcmd is "MOVE SOUTH_WEST" then 4 is returned.
