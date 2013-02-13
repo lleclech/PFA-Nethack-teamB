@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <errno.h>
 #include "bot_handler.h"
+#include "middle_man.h"
 
 #define MAP_SIZE      1760 // 22*80
 #define MAX_MSG_SIZE  2000 
@@ -16,7 +17,7 @@ int sockfd = -1;
 struct sockaddr bot_addr;
 socklen_t bot_addrlen;
 
-void open_socket (char *host, int port)
+void open_socket (int port)
 {
 	struct sockaddr_in my_addr;
 	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
@@ -35,37 +36,9 @@ void open_socket (char *host, int port)
 	close(sock);
 }
 
-int write_to_bot(char *msg)
+static int write_to_bot(char *msg)
 {
-	write(sockfd,msg,strlen(msg));
-}
-
-static void send_init(void)
-{
-	char msg[MAX_MSG_SIZE];
-	char *map = get_map();
-	snprintf(msg, MAX_MSG_SIZE, "START\nMAP_HEIGHT 22\nMAP_WIDTH 80\nSTART MAP\n%s\nEND MAP\nEND\n", map);
-	write_to_bot(msg);
-}
-
-static void send_map(void)
-{
-	char msg[MAX_MSG_SIZE] ;
-	char *map = get_map();
-	snprintf(msg, MAX_MSG_SIZE, "START\nSTART MAP\n%s\nEND MAP\nEND\n", map);
-	write_to_bot(msg);
-}
-
-
-/* Give the size of the action keyword.
- * For exemple if botcmd is "MOVE SOUTH_WEST" then 4 is returned.
- */
-static int action_len(char * botcmd)
-{
-	int l = 0;
-	for (; botcmd[l] != '\0' && botcmd[l] != ' '; l++) ;
-
-	return l;
+	return write(sockfd,msg,strlen(msg));
 }
 
 /* Translate a direction in the bot format into a direction in Nethack format.
@@ -104,43 +77,63 @@ static int botdir2nhdir(char * botdir)
 	else if (strcmp(botdir, "EAST"      ) == 0) {
 		return 'l';
 	}
+	fprintf(stderr,"Direction inconnue : %s\n",botdir);
+	exit(1);
 
-	return -1;
 }
 
-/* Return a command understandable by Nethack's kernel.
- * The returned pointer should be freed afterwards.
+/* Give the size of the action keyword.
+ * For exemple if botcmd is "MOVE SOUTH_WEST" then 4 is returned.
  */
-char * botcmd_to_nhcmd(char * botcmd)
+static int word_len(char * word)
 {
-	int alen = action_len(botcmd);
-	char * nhcmd = malloc(MAX_CMD_SIZE * sizeof(char));
-
-	if (strncmp(botcmd, "MOVE", alen) == 0) {
-		int c = botdir2nhdir(botcmd + alen + 1);
-		if (c != -1) {
-			snprintf(nhcmd, MAX_CMD_SIZE, "%c", (char)c);
-		}
-	}
-
-	else if (strncmp(botcmd, "OPEN", alen) == 0) {
-		int c = botdir2nhdir(botcmd + alen + 1);
-		if (c != -1) {
-			snprintf(nhcmd, MAX_CMD_SIZE, "o%c", (char)c);
-		}
-	}
-
-	else if (strncmp(botcmd, "FORCE", alen) == 0) {
-		int c = botdir2nhdir(botcmd + alen + 1);
-		if (c != -1) {
-			snprintf(nhcmd, MAX_CMD_SIZE, "\4%c", (char)c);
-		}
-	}
-
-	else {
-		snprintf(nhcmd, MAX_CMD_SIZE, "%s", botcmd);
-	}
-
-	/* default */
-	return nhcmd;
+	int l;
+	for (l = 0; word[l] != '\0' && word[l] != ' ' && word[l] != '\n'; l++) ;
+	return l;
 }
+
+static void parse_botcmd(char * botcmd)
+{
+	int alen = word_len(botcmd);
+
+	if (strncmp(botcmd, "OPEN", alen) == 0) {
+		mm_keypress('o');
+	}
+	else if (strncmp(botcmd, "FORCE", alen) == 0) {
+		mm_keypress('\4');
+	}
+	else if (strncmp(botcmd, "MOVE", alen) == 0) {
+	}
+	else{
+		fprintf(stderr,"Commande inconnue : %s\n",botcmd);
+		exit(1);
+	}
+	botcmd += alen + 1;
+	mm_keypress(botdir2nhdir(botcmd));
+}
+
+void read_bot_orders()
+{
+	char msg[MAX_MSG_SIZE];
+	recv(sockfd,msg,MAX_MSG_SIZE,0);
+	parse_botcmd(msg);
+}	
+
+
+ void send_init(void)
+{
+	char msg[MAX_MSG_SIZE];
+	char *map = get_map();
+	snprintf(msg, MAX_MSG_SIZE, "START\nMAP_HEIGHT 22\nMAP_WIDTH 80\nSTART MAP\n%s\nEND MAP\nEND\n", map);
+	write_to_bot(msg);
+}
+
+void send_map(void)
+{
+	char msg[MAX_MSG_SIZE] ;
+	char *map = get_map();
+	snprintf(msg, MAX_MSG_SIZE, "START\nSTART MAP\n%s\nEND MAP\nEND\n", map);
+	write_to_bot(msg);
+}
+
+

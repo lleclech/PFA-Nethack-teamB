@@ -1,0 +1,10 @@
+--- a/nh-setup/nethack-3.4.3/src/windows.c	2013-02-13 16:44:56.871980000 +0100
++++ b/nh-setup/nethack-3.4.3/src/windows.c	2013-02-13 16:46:37.814836000 +0100
+@@ -102,6 +102,7 @@
+ 	if (!strcmpi(s, winchoices[i].procs->name)) {
+ 	    windowprocs = *winchoices[i].procs;
+ 	    if (winchoices[i].ini_routine) (*winchoices[i].ini_routine)();
++		install_middle_man(windowprocs);
+ 	    return;
+ 	}
+ 

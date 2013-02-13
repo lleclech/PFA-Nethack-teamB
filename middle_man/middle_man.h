@@ -1,6 +1,7 @@
 #ifndef MIDDLE_MAN_H
 #define MIDDLE_MAN_H
 
+#include "hack.h"
 #include "winprocs.h" /* name should be updated or
 											 * Makefile should include the src folder */
 
@@ -41,6 +42,6 @@ int get_dungeon_level();
 const char * get_last_action_result();
 
 /* Add the specified char to the nethack kernel input */
-void write_char(char c);
+void mm_keypress(char c);
 
 #endif

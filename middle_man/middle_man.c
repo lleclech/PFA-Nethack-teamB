@@ -1,11 +1,10 @@
-#include "hack.h"
 #include "middle_man.h"
 #include <string.h>
 
 #define MM_FIFO_LENGTH 100
 
 char mm_map[81*21+1]; //(x y)
-int mm_cmdbuf[MM_FIFO_LENGTH]; //FIFO containing bot commands 
+char mm_cmdbuf[MM_FIFO_LENGTH]; //FIFO containing bot commands 
 int mm_cmdtop = -1; //Command top pointer
 int mm_cmdtail = -1; //Command tail pointer
 struct window_procs realwindowprocs;
@@ -33,12 +32,11 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 	/* Game is asking for a keypress that the bot didn't give */
 	key = mm_cmdbuf[mm_cmdtail]; 
 	fifo_inc(&mm_cmdtail);
-	*mod = mm_cmdbuf[mm_cmdtail]; 
-	fifo_inc(&mm_cmdtail);
+	*mod = 0;
 	return key;
 }
 
-struct window_procs * install_middle_man(struct window_procs * windowprocs){
+void install_middle_man(struct window_procs * windowprocs){
 /* Initialise map, and change glyph printing logic */
 	int i;
 	memcpy(&realwindowprocs,windowprocs,sizeof realwindowprocs);
@@ -51,7 +49,6 @@ struct window_procs * install_middle_man(struct window_procs * windowprocs){
 	mm_cmdtail = 0;
 	windowprocs->win_print_glyph = middle_man_print_glyph;
 	windowprocs->win_nh_poskey = middle_man_nh_poskey;
-	return windowprocs;
 }
 
 char *get_map(){
@@ -60,9 +57,7 @@ char *get_map(){
 }
 
 
-void simulate_keypress(int key, int mod){
-	mm_cmdbuf[mm_cmdtop] = key;		
-	fifo_inc(&mm_cmdtop);
-	mm_cmdbuf[mm_cmdtop] = mod;	
+void mm_keypress(char c){
+	mm_cmdbuf[mm_cmdtop] = c;		
 	fifo_inc(&mm_cmdtop);
 }
