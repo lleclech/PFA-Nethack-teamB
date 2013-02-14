@@ -1,12 +1,12 @@
 diff -Naur nethack-3.4.3.b/src/Makefile nethack-3.4.3/src/Makefile
---- nethack-3.4.3.b/src/Makefile	2013-01-06 19:41:52.482424960 +0100
-+++ nethack-3.4.3/src/Makefile	2013-01-06 19:43:10.342012210 +0100
+--- a/nh-setup/nethack-3.4.3/src/Makefile	2013-01-06 19:41:52.482424960 +0100
++++ b/nh-setup/nethack-3.4.3/src/Makefile	2013-01-06 19:43:10.342012210 +0100
 @@ -141,6 +141,9 @@
  #LINK = gcc
  #LFLAGS = -Xlinker -soname=_APP_
  
 +# PFA
-+PFASRC = ../../pfa-src
++PFASRC = ../../../pfa-src
 +
  # Only used for the Gnome interface.
  # When including the Gnome interface, you need to include gnome specific
@@ -26,29 +26,31 @@ diff -Naur nethack-3.4.3.b/src/Makefile nethack-3.4.3/src/Makefile
  #
 -WINSRC = $(WINTTYSRC)
 -WINOBJ = $(WINTTYOBJ)
-+WINSRC = $(WINTTYSRC) $(PFASRC)/middleman.c
-+WINOBJ = $(WINTTYOBJ) middleman.o
++WINSRC = $(WINTTYSRC) $(PFASRC)/bot_handler.c $(PFASRC)/middle_man.c
++WINOBJ = $(WINTTYOBJ) bot_handler.o middle_man.o
  
  # on some systems the termcap library is in -ltermcap or -lcurses
  # on 386 Xenix, the -ltermlib tputs() seems not to work; use -lcurses instead
-@@ -571,6 +574,9 @@
+@@ -571,6 +576,11 @@
  		../include/wintty.h ../include/trampoli.h
  	touch $(HACK_H)
  #
-+middleman.o: $(PFASRC)/middleman.c $(PFASRC)/middleman.h
-+	$(CC) $(CFLAGS) -c $(PFASRC)/middleman.c
++middle_man.o: $(PFASRC)/middle_man.c $(PFASRC)/middle_man.h
++	$(CC) $(CFLAGS) -c $(PFASRC)/middle_man.c
++bot_handler.o: $(PFASRC)/bot_handler.c $(PFASRC)/bot_handler.h
++	$(CC) $(CFLAGS) -c $(PFASRC)/bot_handler.c
 +#
  tos.o: ../sys/atari/tos.c $(HACK_H) ../include/tcap.h
  	$(CC) $(CFLAGS) -c ../sys/atari/tos.c
  pcmain.o: ../sys/share/pcmain.c $(HACK_H) ../include/dlb.h \
 diff -Naur nethack-3.4.3.b/src/windows.c nethack-3.4.3/src/windows.c
---- nethack-3.4.3.b/src/windows.c	2013-01-06 19:41:52.492424908 +0100
-+++ nethack-3.4.3/src/windows.c	2013-01-06 19:43:24.228605240 +0100
+--- a/nh-setup/nethack-3.4.3/src/windows.c	2013-01-06 19:41:52.492424908 +0100
++++ b/nh-setup/nethack-3.4.3/src/windows.c	2013-01-06 19:43:24.228605240 +0100
 @@ -3,6 +3,8 @@
  /* NetHack may be freely redistributed.  See license for details. */
  
  #include "hack.h"
-+#include "middleman.h"
++#include "middle_man.h"
 +
  #ifdef TTY_GRAPHICS
  #include "wintty.h"
@@ -57,7 +59,7 @@ diff -Naur nethack-3.4.3.b/src/windows.c nethack-3.4.3/src/windows.c
  	if (!strcmpi(s, winchoices[i].procs->name)) {
  	    windowprocs = *winchoices[i].procs;
  	    if (winchoices[i].ini_routine) (*winchoices[i].ini_routine)();
-+		install_middle_man(windowprocs);
++		install_middle_man(&windowprocs);
  	    return;
  	}
  

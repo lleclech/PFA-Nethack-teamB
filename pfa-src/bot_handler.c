@@ -17,8 +17,9 @@ int sockfd = -1;
 struct sockaddr bot_addr;
 socklen_t bot_addrlen;
 
-void open_socket (int port)
+static void open_socket (int port)
 {
+	fprintf(stderr,"Open socket\n");
 	struct sockaddr_in my_addr;
 	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if(sock == -1)
@@ -112,28 +113,22 @@ static void parse_botcmd(char * botcmd)
 	mm_keypress(botdir2nhdir(botcmd));
 }
 
-void read_bot_orders()
-{
-	char msg[MAX_MSG_SIZE];
-	recv(sockfd,msg,MAX_MSG_SIZE,0);
-	parse_botcmd(msg);
-}	
 
-
- void send_init(void)
-{
-	char msg[MAX_MSG_SIZE];
-	char *map = get_map();
-	snprintf(msg, MAX_MSG_SIZE, "START\nMAP_HEIGHT 22\nMAP_WIDTH 80\nSTART MAP\n%s\nEND MAP\nEND\n", map);
-	write_to_bot(msg);
-}
-
-void send_map(void)
+void bot_turn(void)
 {
 	char msg[MAX_MSG_SIZE] ;
 	char *map = get_map();
-	snprintf(msg, MAX_MSG_SIZE, "START\nSTART MAP\n%s\nEND MAP\nEND\n", map);
+	fprintf(stderr,"Bot turn, sockfd = %d\n",sockfd);
+	if(sockfd == -1){
+		open_socket(4242);
+		snprintf(msg, MAX_MSG_SIZE, "START\nMAP_HEIGHT 22\nMAP_WIDTH 80\nSTART MAP\n%s\nEND MAP\nEND\n", map);
+	}
+	else {
+		snprintf(msg, MAX_MSG_SIZE, "START\nSTART MAP\n%s\nEND MAP\nEND\n", map);
+	}
 	write_to_bot(msg);
+	recv(sockfd,msg,MAX_MSG_SIZE,0);
+	parse_botcmd(msg);
 }
 
 

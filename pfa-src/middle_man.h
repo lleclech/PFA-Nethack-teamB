@@ -22,7 +22,7 @@
  * The middle_man window_procs address if everything worked as intended
  * null if an error has occured
  */
-struct window_procs * install_middle_man(struct window_procs * windowprocs);
+void install_middle_man(struct window_procs * windowprocs);
 
 /* Getter on the visible map 
  * Should reflect what a user would see on a tty 

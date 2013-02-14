@@ -1,5 +1,6 @@
 #include "middle_man.h"
 #include <string.h>
+#include <assert.h>
 
 #define MM_FIFO_LENGTH 100
 
@@ -11,7 +12,7 @@ struct window_procs realwindowprocs;
 
 static void fifo_inc(int *i)
 {
-	*i++;
+	(*i)++;
 	*i=(*i)%MM_FIFO_LENGTH;
 }
 
@@ -28,12 +29,18 @@ void middle_man_print_glyph(winid window,XCHAR_P x,XCHAR_P y,int glyph)
 
 int middle_man_nh_poskey(int *x, int *y, int *mod){
 	int key;
-	assert(mm_cmdtop != mm_cmdtail);
+	FILE *log = fopen("log.txt","w");
+	fprintf(log,"Poskey, %d / %d\n", mm_cmdtop, mm_cmdtail);
+	fclose(log);
+	if(mm_cmdtop == mm_cmdtail){
 	/* Game is asking for a keypress that the bot didn't give */
+		bot_turn();
+	}
 	key = mm_cmdbuf[mm_cmdtail]; 
 	fifo_inc(&mm_cmdtail);
 	*mod = 0;
 	return key;
+
 }
 
 void install_middle_man(struct window_procs * windowprocs){
@@ -45,7 +52,8 @@ void install_middle_man(struct window_procs * windowprocs){
 		mm_map[81*i] = '\n';
 	}
 	mm_map[81*21] = '\0';
-	mm_cmdtop = 0;
+	mm_cmdtop = 1;
+	mm_cmdbuf[0] = 'y';
 	mm_cmdtail = 0;
 	windowprocs->win_print_glyph = middle_man_print_glyph;
 	windowprocs->win_nh_poskey = middle_man_nh_poskey;
