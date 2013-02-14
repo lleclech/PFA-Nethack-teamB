@@ -19,7 +19,6 @@ socklen_t bot_addrlen;
 
 static void open_socket (int port)
 {
-	fprintf(stderr,"Open socket\n");
 	struct sockaddr_in my_addr;
 	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
 	if(sock == -1)
@@ -34,11 +33,13 @@ static void open_socket (int port)
 	bind(sock,(struct sockaddr *) &my_addr,sizeof(struct sockaddr_in));
 	listen(sock,1);
 	sockfd = accept(sock,&bot_addr, &bot_addrlen);
+	//FIXME : Devrait etre bloquant !!!
 	close(sock);
 }
 
 static int write_to_bot(char *msg)
 {
+	fprintf(stderr,"sockfd = %d\n Message :\n%s",sockfd,msg);
 	return write(sockfd,msg,strlen(msg));
 }
 
@@ -118,7 +119,6 @@ void bot_turn(void)
 {
 	char msg[MAX_MSG_SIZE] ;
 	char *map = get_map();
-	fprintf(stderr,"Bot turn, sockfd = %d\n",sockfd);
 	if(sockfd == -1){
 		open_socket(4242);
 		snprintf(msg, MAX_MSG_SIZE, "START\nMAP_HEIGHT 22\nMAP_WIDTH 80\nSTART MAP\n%s\nEND MAP\nEND\n", map);
@@ -127,7 +127,8 @@ void bot_turn(void)
 		snprintf(msg, MAX_MSG_SIZE, "START\nSTART MAP\n%s\nEND MAP\nEND\n", map);
 	}
 	write_to_bot(msg);
-	recv(sockfd,msg,MAX_MSG_SIZE,0);
+	int msglen = recv(sockfd,msg,MAX_MSG_SIZE,0);
+	fprintf(stderr,"Recieved message size %d :\n%s",msglen,msg);
 	parse_botcmd(msg);
 }
 

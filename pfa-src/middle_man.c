@@ -29,9 +29,7 @@ void middle_man_print_glyph(winid window,XCHAR_P x,XCHAR_P y,int glyph)
 
 int middle_man_nh_poskey(int *x, int *y, int *mod){
 	int key;
-	FILE *log = fopen("log.txt","w");
-	fprintf(log,"Poskey, %d / %d\n", mm_cmdtop, mm_cmdtail);
-	fclose(log);
+	fprintf(stderr,"Poskey, %d / %d\n", mm_cmdtop, mm_cmdtail);
 	if(mm_cmdtop == mm_cmdtail){
 	/* Game is asking for a keypress that the bot didn't give */
 		bot_turn();
