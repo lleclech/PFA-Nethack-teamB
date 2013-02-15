@@ -66,8 +66,11 @@ if [ $reuse = 0 ]; then
 fi
 
 if [ -d $patchdir ]; then
-    echo "Applying patches..."
-    apply_patch
+    read -p "Apply game patches ? [Y/n]" yn
+        case $yn in
+            Y|y|"" ) apply_patch;;
+            * ) ;;
+        esac
 fi
 
 cd $nhdir && make && make install
