@@ -12,7 +12,7 @@
 #define MAP_SIZE      1760 // 22*80
 #define MAX_MSG_SIZE  2000 
 #define MAX_CMD_SIZE  5
-#define CHK(X) do { if(X == -1) {perror("Erreur"); exit(1); } } while(0)
+#define CHK(X) do { if(X == -1) {perror("Erreur systeme"); exit(1); } } while(0)
 
 int sockfd = -1;
 struct sockaddr bot_addr;
@@ -22,11 +22,7 @@ static void open_socket (int port)
 {
 	struct sockaddr_in my_addr;
 	int sock = socket(AF_INET, SOCK_STREAM, 0);
-	if(sock == -1)
-	{
-		perror("socket()");
-		exit(errno);
-	} 
+	CHK(sock);
 	my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	my_addr.sin_port = htons(port);
 	my_addr.sin_family = AF_INET;
@@ -35,61 +31,15 @@ static void open_socket (int port)
 	CHK(listen(sock,1));
 	sockfd = accept(sock,&bot_addr, &bot_addrlen);
 	CHK(sockfd);
-	fprintf(stderr,"accept = %d\n",sockfd);
 	//FIXME : Devrait etre bloquant !!!
 	close(sock);
 }
 
 static int write_to_bot(char *msg)
 {
-	fprintf(stderr,"sockfd = %d\n Message :\n%s",sockfd,msg);
 	return write(sockfd,msg,strlen(msg));
 }
 
-/* Translate a direction in the bot format into a direction in Nethack format.
- * Return -1 if direction is invalid.
- */
-static int botdir2nhdir(char * botdir)
-{
-	if      (strcmp(botdir, "NORTH"     ) == 0) {
-		return 'k';
-	}
-
-	else if (strcmp(botdir, "NORTH_WEST") == 0) {
-		return 'y';
-	}
-
-	else if (strcmp(botdir, "NORTH_EAST") == 0) {
-		return 'u';
-	}
-
-	else if (strcmp(botdir, "SOUTH"     ) == 0) {
-		return 'j';
-	}
-
-	else if (strcmp(botdir, "SOUTH_WEST") == 0) {
-		return 'b';
-	}
-
-	else if (strcmp(botdir, "SOUTH_EAST") == 0) {
-		return 'n';
-	}
-
-	else if (strcmp(botdir, "WEST"      ) == 0) {
-		return 'h';
-	}
-
-	else if (strcmp(botdir, "EAST"      ) == 0) {
-		return 'l';
-	}
-	fprintf(stderr,"Direction inconnue : %s\n",botdir);
-	exit(1);
-
-}
-
-/* Give the size of the action keyword.
- * For exemple if botcmd is "MOVE SOUTH_WEST" then 4 is returned.
- */
 static int word_len(char * word)
 {
 	int l;
@@ -97,9 +47,55 @@ static int word_len(char * word)
 	return l;
 }
 
+/* Translate a direction in the bot format into a direction in Nethack format.
+ * Return -1 if direction is invalid.
+ */
+static int botdir2nhdir(char * botdir)
+{
+	int wlen = word_len(botdir);
+	if      (strncmp(botdir, "NORTH"    ,wlen) == 0) {
+		return 'k';
+	}
+
+	else if (strncmp(botdir, "NORTH_WEST",wlen) == 0) {
+		return 'y';
+	}
+
+	else if (strncmp(botdir, "NORTH_EAST",wlen) == 0) {
+		return 'u';
+	}
+
+	else if (strncmp(botdir, "SOUTH"     ,wlen) == 0) {
+		return 'j';
+	}
+
+	else if (strncmp(botdir, "SOUTH_WEST",wlen) == 0) {
+		return 'b';
+	}
+
+	else if (strncmp(botdir, "SOUTH_EAST",wlen) == 0) {
+		return 'n';
+	}
+
+	else if (strncmp(botdir, "WEST"      ,wlen) == 0) {
+		return 'h';
+	}
+
+	else if (strncmp(botdir, "EAST"      ,wlen) == 0) {
+		return 'l';
+	}
+	fprintf(stderr,"Direction inconnue : %s\n",botdir);
+	exit(1);
+
+}
+
 static void parse_botcmd(char * botcmd)
 {
 	int alen = word_len(botcmd);
+	 if (strncmp(botcmd, "SEARCH", alen) == 0) {
+		mm_keypress('s');
+		return;
+	}
 
 	if (strncmp(botcmd, "OPEN", alen) == 0) {
 		mm_keypress('o');
@@ -131,7 +127,6 @@ void bot_turn(void)
 	}
 	write_to_bot(msg);
 	int msglen = recv(sockfd,msg,MAX_MSG_SIZE,0);
-	fprintf(stderr,"Recieved message size %d :\n%s",msglen,msg);
 	parse_botcmd(msg);
 }
 
