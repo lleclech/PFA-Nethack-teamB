@@ -12,6 +12,7 @@
 #define MAP_SIZE      1760 // 22*80
 #define MAX_MSG_SIZE  2000 
 #define MAX_CMD_SIZE  5
+#define CHK(X) do { if(X == -1) {perror("Erreur"); exit(1); } } while(0)
 
 int sockfd = -1;
 struct sockaddr bot_addr;
@@ -20,7 +21,7 @@ socklen_t bot_addrlen;
 static void open_socket (int port)
 {
 	struct sockaddr_in my_addr;
-	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
+	int sock = socket(AF_INET, SOCK_STREAM, 0);
 	if(sock == -1)
 	{
 		perror("socket()");
@@ -30,9 +31,11 @@ static void open_socket (int port)
 	my_addr.sin_port = htons(port);
 	my_addr.sin_family = AF_INET;
 
-	bind(sock,(struct sockaddr *) &my_addr,sizeof(struct sockaddr_in));
-	listen(sock,1);
+	CHK(bind(sock,(struct sockaddr *)&my_addr,sizeof(struct sockaddr_in)));
+	CHK(listen(sock,1));
 	sockfd = accept(sock,&bot_addr, &bot_addrlen);
+	CHK(sockfd);
+	fprintf(stderr,"accept = %d\n",sockfd);
 	//FIXME : Devrait etre bloquant !!!
 	close(sock);
 }
