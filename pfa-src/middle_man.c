@@ -3,9 +3,12 @@
 #include <assert.h>
 
 #define MM_FIFO_LENGTH 100
+#define MAX_TURN 100
+
 
 char mm_map[81*21+1]; //(x y)
 char mm_cmdbuf[MM_FIFO_LENGTH]; //FIFO containing bot commands 
+int mm_turn = 0;
 int mm_cmdtop = -1; //Command top pointer
 int mm_cmdtail = -1; //Command tail pointer
 struct window_procs realwindowprocs;
@@ -31,7 +34,14 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 	int key;
 	if(mm_cmdtop == mm_cmdtail){
 	/* Game is asking for a keypress that the bot didn't give */
-		bot_turn();
+		if (mm_turn > MAX_TURN){
+			exit_nhwindows(NULL);
+			terminate(EXIT_SUCCESS);
+		}
+		else {
+			bot_turn();
+			mm_turn++;
+		}
 	}
 	key = mm_cmdbuf[mm_cmdtail]; 
 	fifo_inc(&mm_cmdtail);
@@ -46,7 +56,7 @@ void install_middle_man(struct window_procs * windowprocs){
 	memcpy(&realwindowprocs,windowprocs,sizeof realwindowprocs);
 	memset(mm_map,' ',81*21);
 	for (i = 1; i <= 21; i++){
-		mm_map[81*i] = '\n';
+		mm_map[81*i] = '\r';
 	}
 	mm_map[81*21] = '\0';
 	mm_cmdtop = 1;

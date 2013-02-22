@@ -31,7 +31,6 @@ static void open_socket (int port)
 	CHK(listen(sock,1));
 	sockfd = accept(sock,&bot_addr, &bot_addrlen);
 	CHK(sockfd);
-	//FIXME : Devrait etre bloquant !!!
 	close(sock);
 }
 
@@ -83,6 +82,12 @@ static int botdir2nhdir(char * botdir)
 
 	else if (strncmp(botdir, "EAST"      ,wlen) == 0) {
 		return 'l';
+	}
+	else if (strncmp(botdir, "DOWN"      ,wlen) == 0) {
+		return '<';
+	}
+	else if (strncmp(botdir, "UP"      ,wlen) == 0) {
+		return '>';
 	}
 	fprintf(stderr,"Direction inconnue : %s\n",botdir);
 	exit(1);
