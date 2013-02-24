@@ -1,5 +1,6 @@
 // Toutes les variables enregistrables entières seront initialisées à -1
 #define INIT_VAR_INT -1
+#define MAX_CHAR 100
 
 /* ---
 Name_mod disponibles
@@ -33,7 +34,7 @@ struct Bot_Info
   char * name;
 };
 
-/* 
+/*
  * La structure AllData contient toutes les données récupérables par le bot
  * Les variables sont toutes initialisées à une valeur qui ne peut pas être renvoyée par le middle-man dans les conditions normales (-1, NULL,...)
  * On sait ainsi quelle valeur ont été renvoyées par le middle-man après l'execution du bot
@@ -44,11 +45,9 @@ struct AllData
   struct Mod_Info mod;       // Informations sur le mod utilisé
   struct Bot_Info bot;       // Informations sur le bot utilisé
   struct Date date;
-  int nb_door_level;         // Nombre total de portes dans le niveau généré
-  int nb_door_discovered;    // Nombre de portes découvertes
-  int nb_steps;              // Nombre de pas effectués
-  int nb_monsters_generated; // Nombre de monstres générés
-  int nb_monsters_killed;    // Nombre de monstres tués
+  int door_lvl;         // Nombre total de portes dans le niveau généré
+  int door_disc;    // Nombre de portes découvertes
+  int steps;              // Nombre de pas effectués
 };
 
 /*
@@ -105,6 +104,8 @@ void assign_nb_monsters_killed(struct AllData *, const int);
  * Destruction de la structure créée
  */
 int destroy_AllData(struct AllData *);
+
+int get_table_name(char *, struct AllData *);
 
 /*
  * Insertion des données stockées dans la base de données
