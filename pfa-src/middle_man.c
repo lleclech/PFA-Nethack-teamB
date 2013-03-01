@@ -1,9 +1,10 @@
 #include "middle_man.h"
+#include "interface_mm.h"
 #include <string.h>
 #include <assert.h>
 
 #define MM_FIFO_LENGTH 100
-#define MAX_TURN 100
+#define MAX_TURNS 10000
 
 
 char mm_map[81*21+1]; //(x y)
@@ -12,6 +13,10 @@ int mm_turn = 0;
 int mm_cmdtop = -1; //Command top pointer
 int mm_cmdtail = -1; //Command tail pointer
 struct window_procs realwindowprocs;
+
+int mm_nb_sdoor = 0;
+int mm_disc_sdoors = 0;
+
 
 static void fifo_inc(int *i)
 {
@@ -34,8 +39,18 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 	int key;
 	if(mm_cmdtop == mm_cmdtail){
 	/* Game is asking for a keypress that the bot didn't give */
-		if (mm_turn > MAX_TURN){
+		if (mm_turn > MAX_TURNS){
 			exit_nhwindows(NULL);
+			bot_end_game();
+			struct AllData *d = init_AllData();
+  			assign_mod(d ,"SEARCH_DOORS", 1);
+  			assign_bot(d ,"RANDOM_VALUES", 1);
+			assign_nb_door_level(d, mm_nb_sdoor); 
+			assign_nb_steps(d, MAX_TURNS);
+			assign_nb_door_discovered(d, mm_disc_sdoors);
+			destroy_AllData(d);
+			write_into_database(d);
+			printf("Discovered secret doors: %d / %d\n",mm_disc_sdoors, mm_nb_sdoor );
 			terminate(EXIT_SUCCESS);
 		}
 		else {

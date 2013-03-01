@@ -34,6 +34,11 @@ static void open_socket (int port)
 	close(sock);
 }
 
+void bot_end_game()
+{
+	close(sockfd);
+}
+
 static int write_to_bot(char *msg)
 {
 	return write(sockfd,msg,strlen(msg));

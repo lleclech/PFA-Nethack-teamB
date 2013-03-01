@@ -16,8 +16,9 @@ diff -Naur nethack-3.4.3.b/src/Makefile nethack-3.4.3/src/Makefile
  # CFLAGS = -g -I../include
  
 -CFLAGS = -O -I../include
-+CFLAGS = -O -I../include -I$(PFASRC)
- LFLAGS = 
++CFLAGS = -O -I../include -I$(PFASRC) 
+-LFLAGS = 
++LFLAGS = -lpthread
  
  # The Qt and Be window systems are written in C++, while the rest of
 @@ -214,8 +217,8 @@
@@ -26,24 +27,29 @@ diff -Naur nethack-3.4.3.b/src/Makefile nethack-3.4.3/src/Makefile
  #
 -WINSRC = $(WINTTYSRC)
 -WINOBJ = $(WINTTYOBJ)
-+WINSRC = $(WINTTYSRC) $(PFASRC)/bot_handler.c $(PFASRC)/middle_man.c
-+WINOBJ = $(WINTTYOBJ) bot_handler.o middle_man.o
++WINSRC = $(WINTTYSRC) $(PFASRC)/*.c
++WINOBJ = $(WINTTYOBJ) bot_handler.o middle_man.o interface_mm.o db_manager.o sqlite3.o
  
  # on some systems the termcap library is in -ltermcap or -lcurses
  # on 386 Xenix, the -ltermlib tputs() seems not to work; use -lcurses instead
-@@ -571,6 +576,11 @@
+@@ -571,6 +582,17 @@
  		../include/wintty.h ../include/trampoli.h
  	touch $(HACK_H)
  #
-+middle_man.o: $(PFASRC)/middle_man.c $(PFASRC)/middle_man.h
-+	$(CC) $(CFLAGS) -c $(PFASRC)/middle_man.c
++sqlite3.o: $(PFASRC)/sqlite3.c $(PFASRC)/sqlite3.h
++	$(CC) $(CFLAGS) -c $<
++db_manager.o: $(PFASRC)/db_manager.c $(PFASRC)/db_manager.h
++	$(CC) $(CFLAGS) -c $<
++interface_mm.o: $(PFASRC)/interface_mm.c $(PFASRC)/interface_mm.h
++	$(CC) $(CFLAGS) -c $<
++middle_man.o: $(PFASRC)/middle_man.c $(PFASRC)/middle_man.h $(PFASRC)/interface_mm.h $(PFASRC)/bot_handler.h
++	$(CC) $(CFLAGS) -c $<
 +bot_handler.o: $(PFASRC)/bot_handler.c $(PFASRC)/bot_handler.h
-+	$(CC) $(CFLAGS) -c $(PFASRC)/bot_handler.c
++	$(CC) $(CFLAGS) -c $<
 +#
  tos.o: ../sys/atari/tos.c $(HACK_H) ../include/tcap.h
  	$(CC) $(CFLAGS) -c ../sys/atari/tos.c
  pcmain.o: ../sys/share/pcmain.c $(HACK_H) ../include/dlb.h \
-diff -Naur nethack-3.4.3.b/src/windows.c nethack-3.4.3/src/windows.c
 --- a/nh-setup/nethack-3.4.3/src/windows.c	2013-01-06 19:41:52.492424908 +0100
 +++ b/nh-setup/nethack-3.4.3/src/windows.c	2013-01-06 19:43:24.228605240 +0100
 @@ -3,6 +3,8 @@
@@ -62,4 +68,44 @@ diff -Naur nethack-3.4.3.b/src/windows.c nethack-3.4.3/src/windows.c
 +		install_middle_man(&windowprocs);
  	    return;
  	}
+
+--- a/nh-setup/nethack-3.4.3/include/extern.h	2013-02-25 11:37:52.515525000 +0100
++++ a/nh-setup/nethack-3.4.3/include/extern.h	2013-02-25 11:37:23.293351000 +0100
+@@ -199,6 +199,7 @@
  
+ /* ### detect.c ### */
+ 
++E int mm_disc_sdoors;
+ E struct obj *FDECL(o_in, (struct obj*,CHAR_P));
+ E struct obj *FDECL(o_material, (struct obj*,unsigned));
+ E int FDECL(gold_detect, (struct obj *));
+@@ -988,6 +989,7 @@
+ 
+ /* ### mklev.c ### */
+ 
++E int mm_nb_sdoor;
+ #ifdef USE_TRAMPOLI
+ E int FDECL(do_comp, (genericptr_t,genericptr_t));
+ #endif
+--- a/nh-setup/nethack-3.4.3/src/detect.c	2013-02-25 10:39:54.298626000 +0100
++++ a/nh-setup/nethack-3.4.3/src/detect.c   2013-02-25 11:31:39.125178000 +0100
+@@ -1192,6 +1192,7 @@
+ 			/* A secret door is found from at the first search*/
+ 			if(0) continue;
+ 			cvt_sdoor_to_door(&levl[x][y]);	/* .typ = DOOR */
++			mm_disc_sdoors++;
+ 			exercise(A_WIS, TRUE);
+ 			nomul(0);
+ 			if (Blind && !aflag)
+--- a/nh-setup/nethack-3.4.3/src/mklev.c	2013-02-25 11:08:30.208105000 +0100
++++ a/nh-setup/nethack-3.4.3/src/mklev.c	2013-02-25 11:11:18.310344000 +0100
+@@ -378,6 +378,9 @@
+ 
+ 	if(!IS_WALL(levl[x][y].typ)) /* avoid SDOORs on already made doors */
+ 		type = DOOR;
++	if (type == SDOOR) {
++		mm_nb_sdoor++;
++	}
+ 	levl[x][y].typ = type;
+ 	if(type == DOOR) {
+ 	    if(!rn2(3)) {      /* is it a locked door, closed, or a doorway? */
