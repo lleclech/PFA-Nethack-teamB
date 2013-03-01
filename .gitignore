@@ -3,5 +3,5 @@ nethack-343-src.tgz
 *.o
 *.lev
 *.class
-nethack-3.4.3/*
+./nh-setup/nethack-3.4.3
 *.jar
