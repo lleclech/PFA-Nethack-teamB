@@ -2,10 +2,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include "interface_mm.h"
-#include "db_manager.h"
 
-extern void * db;
+#include "../pfa-src/interface_mm.h"
+#include "../pfa-src/db_manager.h"
 
 struct AllData * init_AllData(void)
 {
@@ -129,15 +128,19 @@ int write_into_database(struct AllData * d)
     char * args;
     args = malloc(MAX_CHAR * sizeof(char));
 
+    time_t timestamp;
+    struct tm * t;
+    timestamp = time(NULL);
+    t = localtime(&timestamp);
+
+    d->date.year = t->tm_year + 1900;
+    d->date.month = t->tm_mon;
+    d->date.day = t->tm_mday;
+
     // Tester les erreurs d'assignations dans les valeurs toujours utilisées
     if (d->id_party == INIT_VAR_INT)
     {
         printf("Error, id_party has not been assigned properly\n");
-        return EXIT_FAILURE;
-    }
-    if (((d->date.day == INIT_VAR_INT) || (d->date.month == INIT_VAR_INT)) || (d->date.year == INIT_VAR_INT))
-    {
-        printf("Error, date has not been assigned properly\n");
         return EXIT_FAILURE;
     }
     if (d->mod.name == NULL)
@@ -160,6 +163,10 @@ int write_into_database(struct AllData * d)
         printf("\n\n%s\n\n", table_name);
         sprintf(args, "%d, %d, %d, %d, %d, %d", d->date.day, d->date.month, d->date.year, d->door_lvl, d->door_disc, d->steps);
         write_DB(db, table_name, "DAY, MONTH, YEAR, DOORLVL, DOORDISC, STEPS", args, NULL);
+    }
+    else
+    {
+        printf("Non-recognized bot name\n");
     }
 
     free(table_name);

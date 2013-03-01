@@ -4,7 +4,7 @@
 #include<sqlite3.h>
 #include<sys/stat.h>
 
-#include"db_manager.h"
+#include "../pfa-src/db_manager.h"
 
 
 void* init_DB(char* name_DB)
