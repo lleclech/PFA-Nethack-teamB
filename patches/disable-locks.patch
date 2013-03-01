@@ -1,0 +1,24 @@
+--- a/nh-setup/nethack-3.4.3/src/mklev.c  2013-03-01 15:20:34.560378000 +0100
++++ a/nh-setup/nethack-3.4.3/src/mklev.c  2013-03-01 15:23:29.723747000 +0100
+@@ -386,8 +386,10 @@
+ 	    if(!rn2(3)) {      /* is it a locked door, closed, or a doorway? */
+ 		if(!rn2(5))
+ 		    levl[x][y].doormask = D_ISOPEN;
++		/*
+ 		else if(!rn2(6))
+-		    levl[x][y].doormask = D_LOCKED;
++		    levl[x][y].doormask = D_LOCKED; //PFA: No locked doors
++		*/
+ 		else
+ 		    levl[x][y].doormask = D_CLOSED;
+ 
+@@ -419,8 +421,7 @@
+ 	    }
+ 	    /* newsym(x,y); */
+ 	} else { /* SDOOR */
+-		if(shdoor || !rn2(5))	levl[x][y].doormask = D_LOCKED;
+-		else			levl[x][y].doormask = D_CLOSED;
++		levl[x][y].doormask = D_CLOSED;
+ 
+ 		if(!shdoor && level_difficulty() >= 4 && !rn2(20))
+ 		    levl[x][y].doormask |= D_TRAPPED;
