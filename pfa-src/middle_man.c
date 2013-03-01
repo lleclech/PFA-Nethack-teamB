@@ -47,16 +47,32 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 		if (mm_turn > MAX_TURNS){
 			exit_nhwindows(NULL);
 			bot_end_game();
+			void * db = init_db("Netbot_highscores");
+			char * table_name = malloc(100*sizeof(char)); // Name of the table where datas "d" are to be stored
 			struct AllData *d = init_AllData();
 			assign_mod(d ,"SEARCH_DOORS", 1);
 			assign_bot(d ,"RANDOM_VALUES", 1);
 			assign_nb_door_level(d, mm_nb_sdoor); 
 			assign_nb_steps(d, MAX_TURNS);
 			assign_nb_door_discovered(d, mm_disc_sdoors);
-			destroy_AllData(d);
 
 			write_into_database(d);
+			get_table_name(table_name, d); // Get right name of the table
 			printf("Discovered secret doors: %d / %d\n",mm_disc_sdoors, mm_nb_sdoor );
+			printf("Stats on database\n");
+			printf("Generated secret doors :\n");
+			printf("Mean : %d\n", get_mean_on_table(db, table_name, "DOORLVL"));
+			printf("Median : %d\n", get_median_on_table(db, table_name, "DOORLVL"));
+			printf("Standard Deviation : %d\n", get_std_deviation_on_table(db, table_name, "DOORLVL"));
+			printf("Discoverd secret doors :\n");
+			printf("Mean : %d\n", get_mean_on_table(db, table_name, "DOORDISC"));
+			printf("Median : %d\n", get_median_on_table(db, table_name, "DOORDISC"));
+			printf("Standard Deviation : %d\n", get_std_deviation_on_table(db, table_name, "DOORDISC"));
+			printf("Steps :\n");
+			printf("Mean : %d\n", get_mean_on_table(db, table_name, "STEPS"));
+			printf("Median : %d\n", get_median_on_table(db, table_name, "STEPS"));
+			printf("Standard Deviation : %d\n", get_std_deviation_on_table(db, table_name, "STEPS"));
+			destroy_AllData(d);
 			terminate(EXIT_SUCCESS);
 		}
 		else {
