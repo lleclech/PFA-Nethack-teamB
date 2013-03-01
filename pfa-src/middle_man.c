@@ -25,30 +25,36 @@ static void fifo_inc(int *i)
 }
 
 void middle_man_print_glyph(winid window,XCHAR_P x,XCHAR_P y,int glyph)
-/* Store the printed char in the structure before display */
+	/* Store the printed char in the structure before display */
 {
-  int ch,color;
-  unsigned special;
-  mapglyph(glyph,&ch,&color,&special,x,y);
-  assert(ch < 256);
-  mm_map[x+81*y]=(char)ch;
-  realwindowprocs.win_print_glyph(window,x,y,glyph);
+	int ch,color;
+	unsigned special;
+	mapglyph(glyph,&ch,&color,&special,x,y);
+	assert(ch < 256);
+	if((ch == '|' || ch == '-') 
+			&& mm_map[x+81*y] == '+')
+	/* Allows simpler opening door logic on bot side */
+		mm_map[x+81*y] = '#';
+	else
+		mm_map[x+81*y]=(char)ch;
+	realwindowprocs.win_print_glyph(window,x,y,glyph);
 }
 
 int middle_man_nh_poskey(int *x, int *y, int *mod){
 	int key;
 	if(mm_cmdtop == mm_cmdtail){
-	/* Game is asking for a keypress that the bot didn't give */
+		/* Game is asking for a keypress that the bot didn't give */
 		if (mm_turn > MAX_TURNS){
 			exit_nhwindows(NULL);
 			bot_end_game();
 			struct AllData *d = init_AllData();
-  			assign_mod(d ,"SEARCH_DOORS", 1);
-  			assign_bot(d ,"RANDOM_VALUES", 1);
+			assign_mod(d ,"SEARCH_DOORS", 1);
+			assign_bot(d ,"RANDOM_VALUES", 1);
 			assign_nb_door_level(d, mm_nb_sdoor); 
 			assign_nb_steps(d, MAX_TURNS);
 			assign_nb_door_discovered(d, mm_disc_sdoors);
 			destroy_AllData(d);
+
 			write_into_database(d);
 			printf("Discovered secret doors: %d / %d\n",mm_disc_sdoors, mm_nb_sdoor );
 			terminate(EXIT_SUCCESS);
@@ -66,7 +72,7 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 }
 
 void install_middle_man(struct window_procs * windowprocs){
-/* Initialise map, and change glyph printing logic */
+	/* Initialise map, and change glyph printing logic */
 	int i;
 	memcpy(&realwindowprocs,windowprocs,sizeof realwindowprocs);
 	memset(mm_map,' ',81*21);
@@ -82,7 +88,7 @@ void install_middle_man(struct window_procs * windowprocs){
 }
 
 char *get_map(){
-/* Simply get the map */
+	/* Simply get the map */
 	return mm_map;
 }
 
