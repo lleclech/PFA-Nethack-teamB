@@ -125,6 +125,12 @@ class InputOutputUnit{
 		output.flush();
 	}
 	
+	public void broadcastMoveDown(){
+		String action = Protocole.MOVE_TOKEN + " DOWN";
+		Logger.println("ACTION : " + action);
+		output.println(action);
+		output.flush();
+	}
 	public void broadcastSearch(){
 		output.println(Protocole.SEARCH_TOKEN);
 		Logger.println("ACTION : " + Protocole.SEARCH_TOKEN);

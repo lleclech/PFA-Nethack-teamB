@@ -13,11 +13,13 @@ public class Bot {
 	int dungeonLevel;
 	Map map;
 	StepMap steps;
+	boolean	onDownStairs; 
 	
 	public Bot(){
 		dungeonLevel = 0;
 		map = null;
 		steps = null;
+		onDownStairs = false;
 		myParser = new InputOutputUnit();
 	}
 	
@@ -70,7 +72,9 @@ public class Bot {
 	
 	public void randomAction(){
 		double dice = Math.random();
-		if (dice > 0.7)
+		if (onDownStairs && dice > 0.5)
+			myParser.broadcastMoveDown();
+		else if (dice > 0.7)
 			myParser.broadcastSearch();
 		else{
 			Direction d = steps.checkOpen();
@@ -80,6 +84,10 @@ public class Bot {
 			}
 			d = steps.randomWalk();
 			myParser.broadcastMove(d);
+			if (map.isGoingToStairs(d))
+				onDownStairs = true;
+			else
+				onDownStairs = false;
 		}
 			
 	}
