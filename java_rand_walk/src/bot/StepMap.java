@@ -29,23 +29,24 @@ public class StepMap {
 	}
 	public Direction randomWalk(){
 		Position p = m.getPlayerPosition() ;
-		int x = p.getLine();
-		int y = p.getColumn();
+		Position p2;
 		int minval = -1;
 		int val;
 		Direction[] myDirs = Direction.values();
 		for (Direction d : myDirs){
 			if (m.isAllowedMove(d)){
-				val = content[x+ d.getDeltaLine()][y+ d.getDeltaColumn()];
+				p2 = Position.add(p,d);
+				val = content[p2.getLine()][p2.getColumn()];
 				if (minval == -1 || minval > val)
 					minval = val;
 			}
 		}
 		Collections.shuffle(Arrays.asList(myDirs));
 		for (Direction d : myDirs){
-			val = content[x+ d.getDeltaLine()][y+ d.getDeltaColumn()];
+			p2 = Position.add(p,d);
+			val = content[p2.getLine()][p2.getColumn()];
 			if (m.isAllowedMove(d) && val == minval ){
-				content[x + d.getDeltaLine()][y + d.getDeltaColumn()]++;
+				content[p2.getLine()][p2.getColumn()]++;
 				return d;
 			}
 		}
