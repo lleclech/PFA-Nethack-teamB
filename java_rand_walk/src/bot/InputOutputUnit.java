@@ -86,7 +86,7 @@ class InputOutputUnit{
 		while (!(line = input.readLine()).equals(Protocole.END_TOKEN +
 												 " " +
 												 Variable.MAP.getToken())){
-			Logger.println("Read : " + line);
+			//Logger.println("Read : " + line);
 			for (int colNumber = 0; colNumber < mapWidth; colNumber++){
 				if (colNumber >= line.length())
 					map[lineNumber][colNumber] = ' ';//TODO notation en dur à éviter
@@ -96,8 +96,8 @@ class InputOutputUnit{
 			lineNumber++;
 		}
 		Map m = new Map(map);
-		Logger.println("Map parsed : result");
-		Logger.println(m.toString());	
+		//Logger.println("Map parsed : result");
+		//Logger.println(m.toString());	
 		return m;
 	}
 

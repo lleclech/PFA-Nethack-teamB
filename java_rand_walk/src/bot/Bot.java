@@ -54,8 +54,6 @@ public class Bot {
 				nextTurn();
 				Logger.println("DOING TURN");
 				doTurn();
-				Logger.println("STEP MAP");
-				Logger.println(steps.toString());
 			}
 
 		}catch(IOException e){
