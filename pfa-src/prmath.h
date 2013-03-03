@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#undef yn
 #include <math.h>
 
 #include "../pfa-src/math_tool.h"

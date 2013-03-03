@@ -1,5 +1,6 @@
 #include "middle_man.h"
 #include "interface_mm.h"
+#include "math_tool.h"
 #include <string.h>
 #include <assert.h>
 
@@ -14,6 +15,7 @@ int mm_cmdtop = -1; //Command top pointer
 int mm_cmdtail = -1; //Command tail pointer
 struct window_procs realwindowprocs;
 
+struct List_Nbrs * MATH_LIST;
 int mm_nb_sdoor = 0;
 int mm_disc_sdoors = 0;
 
@@ -47,11 +49,12 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 		if (mm_turn > MAX_TURNS){
 			exit_nhwindows(NULL);
 			bot_end_game();
-			void * db = init_db("Netbot_highscores");
+			MATH_LIST = create_list_nbrs();
+			void * db = init_DB("Netbot_highscores");
 			char * table_name = malloc(100*sizeof(char)); // Name of the table where datas "d" are to be stored
 			struct AllData *d = init_AllData();
 			assign_mod(d ,"SEARCH_DOORS", 1);
-			assign_bot(d ,"RANDOM_VALUES", 1);
+			assign_bot(d ,"Explorer", 1);
 			assign_nb_door_level(d, mm_nb_sdoor); 
 			assign_nb_steps(d, MAX_TURNS);
 			assign_nb_door_discovered(d, mm_disc_sdoors);

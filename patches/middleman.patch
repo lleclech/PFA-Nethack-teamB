@@ -18,7 +18,7 @@ diff -Naur nethack-3.4.3.b/src/Makefile nethack-3.4.3/src/Makefile
 -CFLAGS = -O -I../include
 +CFLAGS = -O -I../include -I$(PFASRC) 
 -LFLAGS = 
-+LFLAGS = -lpthread
++LFLAGS = -lpthread -lm
  
  # The Qt and Be window systems are written in C++, while the rest of
 @@ -214,8 +217,8 @@
@@ -28,14 +28,18 @@ diff -Naur nethack-3.4.3.b/src/Makefile nethack-3.4.3/src/Makefile
 -WINSRC = $(WINTTYSRC)
 -WINOBJ = $(WINTTYOBJ)
 +WINSRC = $(WINTTYSRC) $(PFASRC)/*.c
-+WINOBJ = $(WINTTYOBJ) bot_handler.o middle_man.o interface_mm.o db_manager.o sqlite3.o
++WINOBJ = $(WINTTYOBJ) bot_handler.o middle_man.o interface_mm.o db_manager.o sqlite3.o math_tool.o prmath.o
  
  # on some systems the termcap library is in -ltermcap or -lcurses
  # on 386 Xenix, the -ltermlib tputs() seems not to work; use -lcurses instead
-@@ -571,6 +582,17 @@
+@@ -571,6 +586,21 @@
  		../include/wintty.h ../include/trampoli.h
  	touch $(HACK_H)
  #
++prmath.o: $(PFASRC)/prmath.c $(PFASRC)/prmath.h
++	$(CC) $(CFLAGS) -c $<
++math_tool.o: $(PFASRC)/math_tool.c $(PFASRC)/math_tool.h
++	$(CC) $(CFLAGS) -c $<
 +sqlite3.o: $(PFASRC)/sqlite3.c $(PFASRC)/sqlite3.h
 +	$(CC) $(CFLAGS) -c $<
 +db_manager.o: $(PFASRC)/db_manager.c $(PFASRC)/db_manager.h
