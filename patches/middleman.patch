@@ -17,6 +17,7 @@ diff -Naur nethack-3.4.3.b/src/Makefile nethack-3.4.3/src/Makefile
  
 -CFLAGS = -O -I../include
 +CFLAGS = -O -I../include -I$(PFASRC) 
+LFLAGS =
  
  # The Qt and Be window systems are written in C++, while the rest of
 @@ -214,8 +217,8 @@
