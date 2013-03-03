@@ -70,8 +70,10 @@ public class Bot {
 	
 	public void randomAction(){
 		double dice = Math.random();
-		if (onDownStairs && dice > 0.5)
+		if (onDownStairs && dice > 0.5){
 			myParser.broadcastMoveDown();
+			onDownStairs = false;
+		}
 		else if (dice > 0.7)
 			myParser.broadcastSearch();
 		else{

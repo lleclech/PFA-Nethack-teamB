@@ -89,10 +89,10 @@ static int botdir2nhdir(char * botdir)
 		return 'l';
 	}
 	else if (strncmp(botdir, "DOWN"      ,wlen) == 0) {
-		return '<';
+		return '>';
 	}
 	else if (strncmp(botdir, "UP"      ,wlen) == 0) {
-		return '>';
+		return '<';
 	}
 	fprintf(stderr,"Direction inconnue : %s\n",botdir);
 	exit(1);

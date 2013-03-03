@@ -22,10 +22,25 @@ public class Map {
 	public boolean isAllowedMove(Direction d){
 		Square dest = getSquare(Position.add(myPosition, d));
 		// if dest is out of map, is a door or is out of sight, move is forbidden
-		return (dest.getType() != SquareType.CLOSED_DOOR &&
-			dest.getType() != SquareType.UNKNOWN &&
-			dest.getType() != SquareType.VERTICAL_WALL &&
-			dest.getType() != SquareType.HORIZONTAL_WALL);
+		if (dest == null ||
+			dest.getType() == SquareType.CLOSED_DOOR ||
+			dest.getType() == SquareType.UNKNOWN)
+			return false;
+		switch (d){
+		case NORTH:
+		case SOUTH:
+			return (dest.getType() != SquareType.HORIZONTAL_WALL);
+		case EAST:
+		case WEST:
+			return (dest.getType() != SquareType.VERTICAL_WALL);
+		case NORTH_EAST:
+		case NORTH_WEST:
+		case SOUTH_WEST:
+		case SOUTH_EAST:
+			return (dest.getType() != SquareType.VERTICAL_WALL &&
+					dest.getType() != SquareType.HORIZONTAL_WALL);
+		default: return false;
+		}
 	}
 	public boolean isGoingToStairs(Direction d){
 		Square dest = getSquare(Position.add(myPosition, d));

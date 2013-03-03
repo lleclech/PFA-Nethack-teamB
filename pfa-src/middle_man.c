@@ -18,7 +18,7 @@ struct window_procs realwindowprocs;
 struct List_Nbrs * MATH_LIST;
 int mm_nb_sdoor = 0;
 int mm_disc_sdoors = 0;
-
+int mm_depth = 1;
 
 static void fifo_inc(int *i)
 {
@@ -32,6 +32,10 @@ void middle_man_print_glyph(winid window,XCHAR_P x,XCHAR_P y,int glyph)
 	int ch,color;
 	unsigned special;
 	mapglyph(glyph,&ch,&color,&special,x,y);
+	if (depth(&u.uz) != mm_depth){
+		mm_reset_map();
+		mm_depth = depth(&u.uz);
+	}
 	assert(ch < 256);
 	if((ch == '|' || ch == '-') 
 			&& mm_map[x+81*y] == '+')
@@ -49,6 +53,9 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 		if (mm_turn > MAX_TURNS){
 			exit_nhwindows(NULL);
 			bot_end_game();
+			printf("Discovered secret doors: %d / %d\n",mm_disc_sdoors, mm_nb_sdoor );
+			printf("Depth reached: %d\n", mm_depth);
+			/*
 			MATH_LIST = create_list_nbrs();
 			void * db = init_DB("Netbot_highscores");
 			char * table_name = malloc(100*sizeof(char)); // Name of the table where datas "d" are to be stored
@@ -61,7 +68,6 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 
 			write_into_database(d);
 			get_table_name(table_name, d); // Get right name of the table
-			printf("Discovered secret doors: %d / %d\n",mm_disc_sdoors, mm_nb_sdoor );
 			printf("Stats on database\n");
 			printf("Generated secret doors :\n");
 			printf("Mean : %d\n", get_mean_on_table(db, table_name, "DOORLVL"));
@@ -76,6 +82,7 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 			printf("Median : %d\n", get_median_on_table(db, table_name, "STEPS"));
 			printf("Standard Deviation : %d\n", get_std_deviation_on_table(db, table_name, "STEPS"));
 			destroy_AllData(d);
+			*/
 			terminate(EXIT_SUCCESS);
 		}
 		else {
@@ -87,18 +94,21 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 	fifo_inc(&mm_cmdtail);
 	*mod = 0;
 	return key;
-
 }
 
-void install_middle_man(struct window_procs * windowprocs){
-	/* Initialise map, and change glyph printing logic */
+void mm_reset_map(){
 	int i;
-	memcpy(&realwindowprocs,windowprocs,sizeof realwindowprocs);
 	memset(mm_map,' ',81*21);
 	for (i = 1; i <= 21; i++){
 		mm_map[81*i] = '\r';
 	}
 	mm_map[81*21] = '\0';
+}
+
+void install_middle_man(struct window_procs * windowprocs){
+	/* Initialise map, and change glyph printing logic */
+	memcpy(&realwindowprocs,windowprocs,sizeof realwindowprocs);
+	mm_reset_map();
 	mm_cmdtop = 1;
 	mm_cmdbuf[0] = 'y';
 	mm_cmdtail = 0;
