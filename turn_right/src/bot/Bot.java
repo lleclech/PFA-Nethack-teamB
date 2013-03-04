@@ -12,6 +12,8 @@ public class Bot {
     InputOutputUnit myParser;
     int dungeonLevel;
     Map map;
+    String dir;
+    
 	
     public Bot(){
 	dungeonLevel = 0;
@@ -61,24 +63,194 @@ public class Bot {
 	
 	myPosition = getPlayerPosition;
 	SquareTab.getSquareAround(myPosition);
-	if (SquareTab[2].type=HORIZONTAL_WALL){
-	    double dice = Math.random();
-	    if (dice > 0.7){
-		myDir = new Direction("WEST",-1,0);
-		myParser.broadcastMove(myDir);
-		nextTurn();
+	if (dir.equals("NORTH")){
+	    
+	    if (SquareTab[2].type=HORIZONTAL_WALL){
+		double dice = Math.random();
+		if (dice > 0.7){
+		    myDir = new Direction("WEST",-1,0);
+		    dir = "WEST";
+		    myParser.broadcastMove(myDir);
+		    nextTurn();
+		}
+		else{
+		    myParser.broadcastSearch();
+		    nextTurn();
+		}
+		
 	    }
-	    else{
-		myParser.broadcastSearch();
-		nextTurn();
+	    if (squareTab[6].type=VERTICAL_WALL){
+		double dice = Math.random();
+		if (dice < 0.7){
+		    myParser.broadcastSearch();
+		    nextTurn();
+		}
+		else
+		    {
+			myDir = new Direction("WEST",-1,0);
+			dir = "WEST";
+			myParser.broadcastMove(myDir);
+			nextTurn();
+		    }
+		
 	    }
 	    
+	    if (squareTab[4].type=VERTICAL_WALL){
+		double dice = Math.random();
+		if (dice < 0.7){
+		    myParser.broadcastSearch();
+		    nextTurn();
+		}
+		else
+		    {
+			myDir = new Direction("WEST",-1,0);
+			dir = "WEST";
+			myParser.broadcastMove(myDir);
+			nextTurn();
+		    }
 	}
-	
-	
+       	
+	if (dir.equals("WEST")){
+	    if (SquareTab[2].type=VERTICAL_WALL){
+		double dice = Math.random();
+		if (dice > 0.7){
+		    myDir = new Direction("SOUTH",0,-1);
+		    dir = "SOUTH";
+		    myParser.broadcastMove(myDir);
+		    nextTurn();
+		}
+		else{
+		    myParser.broadcastSearch();
+		    nextTurn();
+		}	
+	    }
+	    if (squareTab[2].type=HORIZONTAL_WALL){
+		double dice = Math.random();
+		if (dice < 0.7){
+		    myParser.broadcastSearch();
+		    nextTurn();
+		}
+		else
+		    {
+			myDir = new Direction("WEST",-1,0);
+			dir = "WEST";
+			myParser.broadcastMove(myDir);
+			nextTurn();
+		    }
+		
+	    }
+	    
+	    if (squareTab[8].type=HORIZONTAL_WALL){
+		double dice = Math.random();
+		if (dice < 0.7){
+		    myParser.broadcastSearch();
+		    nextTurn();
+		}
+		else
+		    {
+			myDir = new Direction("WEST",-1,0);
+			dir = "WEST";
+			myParser.broadcastMove(myDir);
+			nextTurn();
+		    }
+		
+	    }
+
+	    if (dir.equals("SOUTH")){
+		if (SquareTab[8].type=HORIZONTAL_WALL){
+		    double dice = Math.random();
+		    if (dice > 0.7){
+			myDir = new Direction("EAST",1,0);
+			dir = "EAST";
+			myParser.broadcastMove(myDir);
+			nextTurn();
+		    }
+		    else{
+			myParser.broadcastSearch();
+			nextTurn();
+		    }	
+		}
+		if (squareTab[4].type=VERTICAL_WALL){
+		    double dice = Math.random();
+		    if (dice < 0.7){
+			myParser.broadcastSearch();
+			nextTurn();
+		    }
+		    else
+			{
+			    myDir = new Direction("SOUTH",-1,0);
+			    dir = "SOUTH";
+			    myParser.broadcastMove(myDir);
+			    nextTurn();
+			}
+		    
+		}
+		
+		if (squareTab[6].type=HORIZONTAL_WALL){
+		    double dice = Math.random();
+		    if (dice < 0.7){
+		    myParser.broadcastSearch();
+		    nextTurn();
+		    }
+		    else
+			{
+			    myDir = new Direction("SOUTH",-1,0);
+			    dir = "SOUTH";
+			    myParser.broadcastMove(myDir);
+			    nextTurn();
+			}
+		
+		}
+	    }
+	    if (dir.equals("EAST")) {
+		if (SquareTab[8].type=VERTICAL_WALL){
+		    double dice = Math.random();
+		    if (dice > 0.7){
+			myDir = new Direction("NORTH",1,0);
+			dir = "NORTH";
+			myParser.broadcastMove(myDir);
+			nextTurn();
+		    }
+		    else{
+			myParser.broadcastSearch();
+			nextTurn();
+		    }	
+		}
+		if (squareTab[8].type=HORIZONTAL_WALL){
+		    double dice = Math.random();
+		    if (dice < 0.7){
+			myParser.broadcastSearch();
+			nextTurn();
+		    }
+		    else
+			{
+			    myDir = new Direction("EAST",0,1);
+			    dir = "EAST";
+			    myParser.broadcastMove(myDir);
+			    nextTurn();
+			}
+		    
+		}
+		
+		if (squareTab[2].type=HORIZONTAL_WALL){
+		    double dice = Math.random();
+		    if (dice < 0.7){
+			myParser.broadcastSearch();
+		    nextTurn();
+		    }
+		    else
+			{
+			    myDir = new Direction("EAST",-1,0);
+			    dir = "EAST";
+			    myParser.broadcastMove(myDir);
+			    nextTurn();
+			}
+		
+		}
+	}
     }
 	
-    public square[10] getSquareAround(position p)
+	public square[10] getSquareAround(position p)
     {
 	position Position_no = new Position(p.line+1,p.column-1);
 	position Position_n = new Position(p.line+1,p.column);
