@@ -1,56 +1,45 @@
 diff -Naur nethack-3.4.3.b/src/Makefile nethack-3.4.3/src/Makefile
 --- a/nh-setup/nethack-3.4.3/src/Makefile	2013-01-06 19:41:52.482424960 +0100
 +++ b/nh-setup/nethack-3.4.3/src/Makefile	2013-01-06 19:43:10.342012210 +0100
-@@ -141,6 +141,9 @@
+@@ -141,6 +141,11 @@
  #LINK = gcc
  #LFLAGS = -Xlinker -soname=_APP_
  
 +# PFA
-+PFASRC = ../../../pfa-src
++PFADIR =../../../pfa-src/ 
++pfa:
++	(cd $(PFADIR) ; $(MAKE) pfa)
 +
  # Only used for the Gnome interface.
  # When including the Gnome interface, you need to include gnome specific
  # directories.  The ones given below is the usual spot for linux systems.
-@@ -151,7 +154,7 @@
+@@ -151,7 +156,7 @@
  # flags for debugging:
  # CFLAGS = -g -I../include
  
 -CFLAGS = -O -I../include
-+CFLAGS = -O -I../include -I$(PFASRC) 
++CFLAGS = -O -I../include -I$(PFADIR) 
  LFLAGS = 
  
  # The Qt and Be window systems are written in C++, while the rest of
-@@ -214,8 +217,8 @@
- 
+@@ -215,7 +220,7 @@
  #
  #
--WINSRC = $(WINTTYSRC)
+ WINSRC = $(WINTTYSRC)
 -WINOBJ = $(WINTTYOBJ)
-+WINSRC = $(WINTTYSRC) $(PFASRC)/*.c
 +WINOBJ = $(WINTTYOBJ) bot_handler.o middle_man.o interface_mm.o db_manager.o math_tool.o prmath.o
  
  # on some systems the termcap library is in -ltermcap or -lcurses
  # on 386 Xenix, the -ltermlib tputs() seems not to work; use -lcurses instead
-@@ -571,6 +584,19 @@
- 		../include/wintty.h ../include/trampoli.h
- 	touch $(HACK_H)
- #
-+prmath.o: $(PFASRC)/prmath.c $(PFASRC)/prmath.h
-+	$(CC) $(CFLAGS) -c $<
-+math_tool.o: $(PFASRC)/math_tool.c $(PFASRC)/math_tool.h
-+	$(CC) $(CFLAGS) -c $<
-+db_manager.o: $(PFASRC)/db_manager.c $(PFASRC)/db_manager.h
-+	$(CC) $(CFLAGS) -c $<
-+interface_mm.o: $(PFASRC)/interface_mm.c $(PFASRC)/interface_mm.h
-+	$(CC) $(CFLAGS) -c $<
-+middle_man.o: $(PFASRC)/middle_man.c $(PFASRC)/middle_man.h $(PFASRC)/interface_mm.h $(PFASRC)/bot_handler.h
-+	$(CC) $(CFLAGS) -c $<
-+bot_handler.o: $(PFASRC)/bot_handler.c $(PFASRC)/bot_handler.h
-+	$(CC) $(CFLAGS) -c $<
-+#
- tos.o: ../sys/atari/tos.c $(HACK_H) ../include/tcap.h
- 	$(CC) $(CFLAGS) -c ../sys/atari/tos.c
- pcmain.o: ../sys/share/pcmain.c $(HACK_H) ../include/dlb.h \
+@@ -442,7 +447,7 @@
+ 	cp ../include/extern.DUMB ../include/extern.h
+ 	@touch DUMB.Setup
+ 
+-all:	$(GAME)
++all: pfa $(GAME)
+ 
+ 
+ #	dependencies for makedefs and its outputs, which the util
 --- a/nh-setup/nethack-3.4.3/src/windows.c	2013-01-06 19:41:52.492424908 +0100
 +++ b/nh-setup/nethack-3.4.3/src/windows.c	2013-01-06 19:43:24.228605240 +0100
 @@ -3,6 +3,8 @@
