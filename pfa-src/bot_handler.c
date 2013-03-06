@@ -36,7 +36,7 @@ static void open_socket (int port)
 
 void bot_end_game()
 {
-	close(sockfd);
+	shutdown(sockfd,SHUT_RDWR);
 }
 
 static int write_to_bot(char *msg)

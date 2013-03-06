@@ -38,6 +38,7 @@ class InputOutputUnit{
 		try{
 			// Verify start of message
 			String line = input.readLine();
+			if (line == null) throw new IOException();
 			if (!line.equals(Protocole.START_TOKEN))
 				throw new RuntimeException("Invalid start Token. Expected \"" +
 										   Protocole.START_TOKEN + "\" received \"" +
@@ -61,7 +62,7 @@ class InputOutputUnit{
 			mySocket.close();
 			String message = "Connection with the server has been closed";
 			System.out.println(message);
-			//throw e;
+			throw e;
 		}
 		Logger.println("Informations Parsed");
 	}

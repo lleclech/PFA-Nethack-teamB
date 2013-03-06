@@ -56,6 +56,7 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 			bot_end_game();
 			FILE *f = fopen("mm_stats.txt","a");
 			fprintf(f,"%d %d %d\n",mm_disc_sdoors, mm_nb_sdoor,mm_depth );
+			fflush(f);
 			fclose(f);
 			/*
 			MATH_LIST = create_list_nbrs();
