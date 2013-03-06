@@ -1,37 +1,45 @@
-diff -Naur nethack-3.4.3.b/src/Makefile nethack-3.4.3/src/Makefile
+--- a/nh-setup/nethack-3.4.3/Makefile	2013-01-06 19:41:52.482424960 +0100
++++ b/nh-setup/nethack-3.4.3/Makefile	2013-01-06 19:43:10.342012210 +0100
+@@ -84,7 +84,7 @@
+ DATDLB = $(DATHELP) dungeon $(SPEC_LEVS) $(QUEST_LEVS) $(VARDATD)
+ DAT = $(DATNODLB) $(DATDLB)
+ 
+-$(GAME):
++$(GAME): pfa
+ 	( cd src ; $(MAKE) )
+ 
+ all:	$(GAME) recover Guidebook $(VARDAT) dungeon spec_levs check-dlb
+@@ -93,6 +93,10 @@
+ # Note: many of the dependencies below are here to allow parallel make
+ # to generate valid output
+ 
++export PFADIR= ../../pfa-src
++pfa:
++	(cd $(PFADIR) ; $(MAKE) pfa)
++
+ Guidebook:
+ 	( cd doc ; $(MAKE) Guidebook )
+
 --- a/nh-setup/nethack-3.4.3/src/Makefile	2013-01-06 19:41:52.482424960 +0100
 +++ b/nh-setup/nethack-3.4.3/src/Makefile	2013-01-06 19:43:10.342012210 +0100
-@@ -141,6 +141,12 @@
- #LINK = gcc
- #LFLAGS = -Xlinker -soname=_APP_
- 
-+# PFA
-+export PFAOBJ = bot_handler.o middle_man.o interface_mm.o db_manager.o math_tool.o prmath.o
-+PFADIR =../../../pfa-src/ 
-+pfa:
-+	(cd $(PFADIR) ; $(MAKE) $(PFAOBJ))
-+
- # Only used for the Gnome interface.
- # When including the Gnome interface, you need to include gnome specific
- # directories.  The ones given below is the usual spot for linux systems.
-@@ -151,7 +157,7 @@
+@@ -151,7 +151,7 @@
  # flags for debugging:
  # CFLAGS = -g -I../include
  
 -CFLAGS = -O -I../include
-+CFLAGS = -O -I../include -I$(PFADIR) 
++CFLAGS = -O -I../include -I ../$(PFADIR) 
  LFLAGS = 
  
  # The Qt and Be window systems are written in C++, while the rest of
-@@ -442,7 +448,7 @@
- 	cp ../include/extern.DUMB ../include/extern.h
- 	@touch DUMB.Setup
+@@ -384,7 +384,7 @@
+ 	steal.o steed.o teleport.o timeout.o topten.o track.o trap.o u_init.o \
+ 	uhitm.o vault.o vision.o vis_tab.o weapon.o were.o wield.o windows.o \
+ 	wizard.o worm.o worn.o write.o zap.o \
+-	$(RANDOBJ) $(SYSOBJ) $(WINOBJ) version.o
++	$(RANDOBJ) $(SYSOBJ) $(WINOBJ) $(PFAOBJ) version.o
+ # the .o files from the HACKCSRC, SYSSRC, and WINSRC lists
  
--all:	$(GAME)
-+all: pfa $(GAME)
- 
- 
- #	dependencies for makedefs and its outputs, which the util
+ $(GAME):	$(SYSTEM)
 --- a/nh-setup/nethack-3.4.3/src/windows.c	2013-01-06 19:41:52.492424908 +0100
 +++ b/nh-setup/nethack-3.4.3/src/windows.c	2013-01-06 19:43:24.228605240 +0100
 @@ -3,6 +3,8 @@

@@ -1,9 +1,14 @@
 CC=gcc
 
+PFAOBJ= middle_man.o bot_handler.o
 INCLUDE = ../nh-setup/nethack-3.4.3/include/
 CFLAGS=-Wall -Wextra -I $(INCLUDE)
 LFLAGS=
-all: test 
+all: pfa test 
+
+pfa: $(PFAOBJ)
+	( mv $(PFAOBJ) ../nh-setup/nethack-3.4.3/src ; \
+	export PFAOBJ="$(PFAOBJ)" )
 
 test: test_bot_handler.o bot_handler.o $(wildcard *.h)
 	${CC} -o $@ $^ ${LFLAGS}

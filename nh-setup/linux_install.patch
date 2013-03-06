@@ -46,7 +46,7 @@ diff -ur nethack-3.4.3.back/src/Makefile nethack-3.4.3/src/Makefile
  # WINTTYLIB = -lcurses16
 -# WINTTYLIB = -lncurses
 -WINTTYLIB = -ltermlib
-+WINTTYLIB = -lncurses -lm -lsqlite3
++WINTTYLIB = -lncurses -lm 
 +# WINTTYLIB = -ltermlib
  #
  # libraries for X11

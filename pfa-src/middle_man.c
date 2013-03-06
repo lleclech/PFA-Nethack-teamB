@@ -44,7 +44,7 @@ void middle_man_print_glyph(winid window,XCHAR_P x,XCHAR_P y,int glyph)
 		mm_map[x+81*y] = '#';
 	else if (ch != ' ')
 		mm_map[x+81*y]=(char)ch;
-	realwindowprocs.win_print_glyph(window,x,y,glyph);
+	//realwindowprocs.win_print_glyph(window,x,y,glyph);
 }
 
 int middle_man_nh_poskey(int *x, int *y, int *mod){
@@ -54,8 +54,9 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 		if (mm_turn > MAX_TURNS){
 			exit_nhwindows(NULL);
 			bot_end_game();
-			printf("Discovered secret doors: %d / %d\n",mm_disc_sdoors, mm_nb_sdoor );
-			printf("Depth reached: %d\n", mm_depth);
+			FILE *f = fopen("mm_stats.txt","a");
+			fprintf(f,"%d %d %d\n",mm_disc_sdoors, mm_nb_sdoor,mm_depth );
+			fclose(f);
 			/*
 			MATH_LIST = create_list_nbrs();
 			void * db = init_DB("Netbot_highscores");
