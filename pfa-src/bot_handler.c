@@ -26,6 +26,8 @@ static void open_socket (int port)
 	my_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 	my_addr.sin_port = htons(port);
 	my_addr.sin_family = AF_INET;
+	int optval = 1;
+	CHK(setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof optval));
 
 	CHK(bind(sock,(struct sockaddr *)&my_addr,sizeof(struct sockaddr_in)));
 	CHK(listen(sock,1));
@@ -37,6 +39,7 @@ static void open_socket (int port)
 void bot_end_game()
 {
 	shutdown(sockfd,SHUT_RDWR);
+	close(sockfd);
 }
 
 static int write_to_bot(char *msg)

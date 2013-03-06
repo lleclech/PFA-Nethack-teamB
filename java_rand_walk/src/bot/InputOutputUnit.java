@@ -30,6 +30,7 @@ class InputOutputUnit{
 	public InputOutputUnit(String hostname, int portNo)
 			throws UnknownHostException, IOException{
 		mySocket = new Socket(hostname, portNo);
+		mySocket.setReuseAddress(true);
 		input = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
 		output = new PrintWriter(mySocket.getOutputStream());
 	}
