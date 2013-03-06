@@ -1,4 +1,5 @@
 #include "middle_man.h"
+#include "bot_handler.h"
 #include "interface_mm.h"
 #include "math_tool.h"
 #include <string.h>
@@ -93,6 +94,8 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 	key = mm_cmdbuf[mm_cmdtail]; 
 	fifo_inc(&mm_cmdtail);
 	*mod = 0;
+	*x = 0;
+	*y = 0;
 	return key;
 }
 

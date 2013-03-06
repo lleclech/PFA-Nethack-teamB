@@ -1,19 +1,20 @@
 diff -Naur nethack-3.4.3.b/src/Makefile nethack-3.4.3/src/Makefile
 --- a/nh-setup/nethack-3.4.3/src/Makefile	2013-01-06 19:41:52.482424960 +0100
 +++ b/nh-setup/nethack-3.4.3/src/Makefile	2013-01-06 19:43:10.342012210 +0100
-@@ -141,6 +141,11 @@
+@@ -141,6 +141,12 @@
  #LINK = gcc
  #LFLAGS = -Xlinker -soname=_APP_
  
 +# PFA
++export PFAOBJ = bot_handler.o middle_man.o interface_mm.o db_manager.o math_tool.o prmath.o
 +PFADIR =../../../pfa-src/ 
 +pfa:
-+	(cd $(PFADIR) ; $(MAKE) pfa)
++	(cd $(PFADIR) ; $(MAKE) $(PFAOBJ))
 +
  # Only used for the Gnome interface.
  # When including the Gnome interface, you need to include gnome specific
  # directories.  The ones given below is the usual spot for linux systems.
-@@ -151,7 +156,7 @@
+@@ -151,7 +157,7 @@
  # flags for debugging:
  # CFLAGS = -g -I../include
  
@@ -22,16 +23,7 @@ diff -Naur nethack-3.4.3.b/src/Makefile nethack-3.4.3/src/Makefile
  LFLAGS = 
  
  # The Qt and Be window systems are written in C++, while the rest of
-@@ -215,7 +220,7 @@
- #
- #
- WINSRC = $(WINTTYSRC)
--WINOBJ = $(WINTTYOBJ)
-+WINOBJ = $(WINTTYOBJ) bot_handler.o middle_man.o interface_mm.o db_manager.o math_tool.o prmath.o
- 
- # on some systems the termcap library is in -ltermcap or -lcurses
- # on 386 Xenix, the -ltermlib tputs() seems not to work; use -lcurses instead
-@@ -442,7 +447,7 @@
+@@ -442,7 +448,7 @@
  	cp ../include/extern.DUMB ../include/extern.h
  	@touch DUMB.Setup
  

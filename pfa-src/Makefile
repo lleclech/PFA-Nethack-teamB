@@ -1,16 +1,15 @@
 CC=gcc
 
-CFLAGS=-Wall -Wextra
+INCLUDE = ../nh-setup/nethack-3.4.3/include/
+CFLAGS=-Wall -Wextra -I $(INCLUDE)
 LFLAGS=
-PFAOBJ = bot_handler.o middle_man.o interface_mm.o db_manager.o math_tool.o prmath.o
-INCLUDE = $(wildcard *.h) 
-all: test $(PFAOBJ) 
+all: test 
 
-test: test_bot_handler.o bot_handler.o
+test: test_bot_handler.o bot_handler.o $(wildcard *.h)
 	${CC} -o $@ $^ ${LFLAGS}
 
-%.o: %.c $(INCLUDE)
-	$(CC) $(CFLAGS) -c $<
+%.o: %.c $(wildcard *.h)
+	$(CC) $(CFLAGS) -c $< 
 
 run_test: test
 	@./test
