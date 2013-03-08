@@ -15,7 +15,7 @@
  
 +export PFADIR= ../../pfa-src
 +pfa:
-+	(cd $(PFADIR) ; $(MAKE) pfa)
++	cd $(PFADIR) ; $(MAKE) pfa; cd ../nh-setup/nethack-3.4.3)
 +
  Guidebook:
  	( cd doc ; $(MAKE) Guidebook )
@@ -99,3 +99,15 @@
  	levl[x][y].typ = type;
  	if(type == DOOR) {
  	    if(!rn2(3)) {      /* is it a locked door, closed, or a doorway? */
+--- a/nh-setup/nethack-3.4.3/sys/unix/unixunix.c	2003-12-08 00:39:13.000000000 +0100
++++ b/nh-setup/nethack-3.4.3/sys/unix/unixunix.c	2013-03-08 10:06:32.297175000 +0100
+@@ -128,8 +128,7 @@
+ 			    error("Cannot open %s", fq_lock);
+ 			}
+ 
+-			if(veryold(fd) /* closes fd if true */
+-							&& eraseoldlocks())
++			eraseoldlocks();
+ 				goto gotlock;
+ 			(void) close(fd);
+ 		} while(i < locknum);
