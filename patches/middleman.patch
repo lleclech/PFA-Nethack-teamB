@@ -5,17 +5,18 @@
  DAT = $(DATNODLB) $(DATDLB)
  
 -$(GAME):
-+$(GAME): pfa
++$(GAME): $(PFAOBJ)
  	( cd src ; $(MAKE) )
  
  all:	$(GAME) recover Guidebook $(VARDAT) dungeon spec_levs check-dlb
-@@ -93,6 +93,10 @@
+@@ -93,6 +93,11 @@
  # Note: many of the dependencies below are here to allow parallel make
  # to generate valid output
  
-+export PFADIR= ../../pfa-src
-+pfa:
-+	cd $(PFADIR) ; $(MAKE) pfa; cd ../nh-setup/nethack-3.4.3)
++export PFADIR=../../pfa-src
++export PFAOBJ=bot_handler.o middle_man.o 
++$(PFAOBJ):
++	(cd $(PFADIR) ; $(MAKE) $(PFAOBJ); cp *.o ../nh-setup/nethack-3.4.3/src)
 +
  Guidebook:
  	( cd doc ; $(MAKE) Guidebook )

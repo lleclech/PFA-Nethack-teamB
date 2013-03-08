@@ -44,7 +44,7 @@ void middle_man_print_glyph(winid window,XCHAR_P x,XCHAR_P y,int glyph)
 		mm_map[x+81*y] = '#';
 	else if (ch != ' ')
 		mm_map[x+81*y]=(char)ch;
-	//realwindowprocs.win_print_glyph(window,x,y,glyph);
+	realwindowprocs.win_print_glyph(window,x,y,glyph);
 }
 
 int middle_man_nh_poskey(int *x, int *y, int *mod){
