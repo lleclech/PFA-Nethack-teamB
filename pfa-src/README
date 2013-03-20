@@ -1,9 +1,12 @@
-This module is used to translate orders between Nethack's kernel language and
-bots' language. It also provides a point of connection for bots.
+This sources are the sources added to the core game to make bot interaction
+functionnal.
 
-You can run a test with:
-$ make run_test
+You can make tests binaries with
+$ make test
 
-and a valgrind test with:
-$ make run_valgrind
+You can make the modified game with
+$ make pfa
 
+If you change the location of game directory, make sure to modify this directory
+Makefile NHDIR variable consequently or you will be unable to make the modified 
+game.
