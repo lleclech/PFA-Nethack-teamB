@@ -4,6 +4,7 @@ nhdir="nethack-3.4.3/"
 nharchive="nethack-343-src.tgz"
 dlurl="http://downloads.sourceforge.net/project/nethack/nethack/3.4.3/nethack-343-src.tgz"
 patchdir="../patches"
+pfadir="../pfa-src"
 
 apply_patch () {
     for i in `ls $patchdir`; do
@@ -73,7 +74,7 @@ if [ -d $patchdir ]; then
         esac
 fi
 
-cd $nhdir && make && make install
+cd $pfadir && make pfa
 
 if [ $? = 0 ]; then
 	echo ""

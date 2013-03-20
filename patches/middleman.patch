@@ -1,26 +1,3 @@
---- a/nh-setup/nethack-3.4.3/Makefile	2013-01-06 19:41:52.482424960 +0100
-+++ b/nh-setup/nethack-3.4.3/Makefile	2013-01-06 19:43:10.342012210 +0100
-@@ -84,7 +84,7 @@
- DATDLB = $(DATHELP) dungeon $(SPEC_LEVS) $(QUEST_LEVS) $(VARDATD)
- DAT = $(DATNODLB) $(DATDLB)
- 
--$(GAME):
-+$(GAME): $(PFAOBJ)
- 	( cd src ; $(MAKE) )
- 
- all:	$(GAME) recover Guidebook $(VARDAT) dungeon spec_levs check-dlb
-@@ -93,6 +93,11 @@
- # Note: many of the dependencies below are here to allow parallel make
- # to generate valid output
- 
-+export PFADIR=../../pfa-src
-+export PFAOBJ=bot_handler.o middle_man.o 
-+$(PFAOBJ):
-+	(cd $(PFADIR) ; $(MAKE) $(PFAOBJ); cp *.o ../nh-setup/nethack-3.4.3/src)
-+
- Guidebook:
- 	( cd doc ; $(MAKE) Guidebook )
-
 --- a/nh-setup/nethack-3.4.3/src/Makefile	2013-01-06 19:41:52.482424960 +0100
 +++ b/nh-setup/nethack-3.4.3/src/Makefile	2013-01-06 19:43:10.342012210 +0100
 @@ -151,7 +151,7 @@
