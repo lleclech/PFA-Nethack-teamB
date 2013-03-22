@@ -60,6 +60,8 @@ class InputOutputUnit{
 		}catch(IOException e){
 			output.close();
 			input.close();
+			mySocket.shutdownInput();
+			mySocket.shutdownOutput();
 			mySocket.close();
 			String message = "Connection with the server has been closed";
 			System.out.println(message);
@@ -98,8 +100,8 @@ class InputOutputUnit{
 			lineNumber++;
 		}
 		Map m = new Map(map);
-		//Logger.println("Map parsed : result");
-		//Logger.println(m.toString());	
+		Logger.println("Map parsed : result");
+		Logger.println(m.toString());	
 		return m;
 	}
 
