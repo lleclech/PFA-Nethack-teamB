@@ -30,6 +30,7 @@ class InputOutputUnit{
 	public InputOutputUnit(String hostname, int portNo)
 			throws UnknownHostException, IOException{
 		mySocket = new Socket(hostname, portNo);
+		mySocket.setReuseAddress(true);
 		input = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
 		output = new PrintWriter(mySocket.getOutputStream());
 	}
@@ -38,6 +39,7 @@ class InputOutputUnit{
 		try{
 			// Verify start of message
 			String line = input.readLine();
+			if (line == null) throw new IOException();
 			if (!line.equals(Protocole.START_TOKEN))
 				throw new RuntimeException("Invalid start Token. Expected \"" +
 										   Protocole.START_TOKEN + "\" received \"" +
@@ -58,10 +60,12 @@ class InputOutputUnit{
 		}catch(IOException e){
 			output.close();
 			input.close();
+			mySocket.shutdownInput();
+			mySocket.shutdownOutput();
 			mySocket.close();
 			String message = "Connection with the server has been closed";
 			System.out.println(message);
-			//throw e;
+			throw e;
 		}
 		Logger.println("Informations Parsed");
 	}
@@ -86,7 +90,7 @@ class InputOutputUnit{
 		while (!(line = input.readLine()).equals(Protocole.END_TOKEN +
 												 " " +
 												 Variable.MAP.getToken())){
-			Logger.println("Read : " + line);
+			//Logger.println("Read : " + line);
 			for (int colNumber = 0; colNumber < mapWidth; colNumber++){
 				if (colNumber >= line.length())
 					map[lineNumber][colNumber] = ' ';//TODO notation en dur à éviter
@@ -125,6 +129,12 @@ class InputOutputUnit{
 		output.flush();
 	}
 	
+	public void broadcastMoveDown(){
+		String action = Protocole.MOVE_TOKEN + " DOWN";
+		Logger.println("ACTION : " + action);
+		output.println(action);
+		output.flush();
+	}
 	public void broadcastSearch(){
 		output.println(Protocole.SEARCH_TOKEN);
 		Logger.println("ACTION : " + Protocole.SEARCH_TOKEN);
