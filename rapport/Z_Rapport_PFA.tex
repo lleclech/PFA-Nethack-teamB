@@ -13,9 +13,9 @@
 \usepackage{setspace}
 \usepackage{wrapfig}
 
-\newcommand{\reporttitle}{Six mois de stage chez Logica}     % Titre
-\newcommand{\reportauthor}{Louis \textsc{LE CLEC'H}} % Auteur
-\newcommand{\reportsubject}{Stage du second semestre} % Sujet
+\newcommand{\reporttitle}{Nethack}     % Titre
+\newcommand{\reportauthors}{Arthur \textsc{HAVLICEK},Louis \textsc{LE CLEC'H},Sven \textsc{TATON},Qiwen \textsc{LU} % Auteurs
+\newcommand{\reportsubject}{Projet de fin d'année 2012-2013} % Sujet
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 \setlength{\parskip}{1ex} % Espace entre les paragraphes
 
@@ -28,26 +28,36 @@
 
 \begin{document}
 \begin{onehalfspace}
-  \include{Title}
+  \include{A_Title}
   %\cleardoublepage % Dans le cas du recto verso, ajoute une page blanche si besoin
   \tableofcontents % Table des matières
   \listoffigures
  % \sloppy          % Justification moins stricte : des mots ne dépasseront pas des paragraphes
   %\cleardoublepage
-  \include{Remerciements}
   
-  \include{Intro}
+  \include{B_Intro}
   
-  \include{Presentation_des_SSII-Logica}
+  \include{C_Cahier_des_charges}
   
-  \include{TESTING_FACTORY}
+  \include{D_Fonctionnement_General}
   
-  \include{Projets_et_Applications}
+  \include{E_Presentation_Architecture}
   
-  \include{Partie_travail_personnel}
+  \include{F_Module_Bot}
   
-  \include{Conclusion}
+  \include{G_Module_BotHandler}
+
+  \include{H_Module_MiddleMan}
   
-  \include{Annexe}
+  \include{I_Module_InterfaceMM}
+
+  \include{J_Module_DBManager}
+
+  \include{k_Module_StatisticTools}
+
+  \include{L_Conclusion}
+  
+  \include{M_Annexe}
+
 \end{onehalfspace}
 \end{document}
