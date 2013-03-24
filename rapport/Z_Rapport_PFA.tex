@@ -1,0 +1,53 @@
+\documentclass[a4paper,11pt,final]{report}
+% Pour une impression recto verso, utilisez plutôt ce documentclass :
+%\documentclass[a4paper,twoside,11pt,final]{article}
+
+\usepackage[francais]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[pdftex]{graphicx}
+\usepackage{setspace}
+\usepackage[colorlinks=true,linkcolor=black]{hyperref}
+\usepackage[french]{varioref}
+\usepackage[top=7em, bottom=7em, left=7em, right=7em]{geometry}
+\usepackage{setspace}
+\usepackage{wrapfig}
+
+\newcommand{\reporttitle}{Six mois de stage chez Logica}     % Titre
+\newcommand{\reportauthor}{Louis \textsc{LE CLEC'H}} % Auteur
+\newcommand{\reportsubject}{Stage du second semestre} % Sujet
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\setlength{\parskip}{1ex} % Espace entre les paragraphes
+
+\hypersetup{
+    pdftitle={\reporttitle},%
+    pdfauthor={\reportauthor},%
+    pdfsubject={\reportsubject},%
+   % pdfkeywords={rapport} {vos} {mots} {clés}
+}
+
+\begin{document}
+\begin{onehalfspace}
+  \include{Title}
+  %\cleardoublepage % Dans le cas du recto verso, ajoute une page blanche si besoin
+  \tableofcontents % Table des matières
+  \listoffigures
+ % \sloppy          % Justification moins stricte : des mots ne dépasseront pas des paragraphes
+  %\cleardoublepage
+  \include{Remerciements}
+  
+  \include{Intro}
+  
+  \include{Presentation_des_SSII-Logica}
+  
+  \include{TESTING_FACTORY}
+  
+  \include{Projets_et_Applications}
+  
+  \include{Partie_travail_personnel}
+  
+  \include{Conclusion}
+  
+  \include{Annexe}
+\end{onehalfspace}
+\end{document}

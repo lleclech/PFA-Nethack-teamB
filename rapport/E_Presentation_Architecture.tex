@@ -1,0 +1,33 @@
+\chapter{Travail personnel}
+
+Durant les six mois passés à Logica, j'ai travaillé sur la plupart des aspects du projet. J'ai élaboré un dictionnaire des mots d'action pour l'application GCC, participé à une campagne de tests comprenant la conception et l'exécution de ceux-ci. J'ai également participé au développement d'une application, COPIN, devant être testée ensuite par la Testing Factory. J'ai également travaillé sur l'évolution de l'automate de test de l'application OASIS RC, et à différentes opérations de maintenance sur les automates existants (optimisations, débugage, ...).
+
+\section{Élaboration du dictionnaire des mots d'action de GCC}
+
+Lors de mon arrivée à la Testing Factory, j'ai été affecté au pôle PCRSF de la Testing Factory où j'ai été chargé de refaire le dictionnaire des mots d'action de l'application GCC. En effet, le dictionnaire existant était devenu obsolète et demandait à être refondu. Le plus difficile a été de m'approprier le côté fonctionnel de l'application, car l'application possède un peu moins d'une centaine d'écran et elle regroupe la plupart des fonctionnalité des autres applications.
+
+Chaque mot d'action a été défini selon le formalisme lié a la méthodologie TestFrame.
+Il en a résulté un dictionnaire de plus de 1400 mots d'action, qui seront utilisés pour concevoir les tests de la prochaine campagne de test de GCC.
+\begin{figure}
+  \begin{center}
+    \includegraphics[width=15cm]{Images/Dictionnaire_Mots_Actions}
+   \end{center}
+  \caption{Dictionnaire des mots d'action de GCC}
+  \label{Dictionnaire des mots d'action de GCC}
+\end{figure}
+
+\section{Campagnes de tests} 
+
+En mars, j'ai participé à la campagne de test de SAFIR V2 sous la direction de Mathieu LAMIT.L'application avait subit une évolution entrainant une série de test d'intégration et de non régression. 
+J'ai également participé à deux campagne de test de SAFIR V1.
+
+\section{Développement de l'application COPIN}
+
+Au cours de mon stage, j'ai été détaché de la Testing Factory sur un autre projet, CS RSK, chargé entre autre de mettre à jour
+l'application COPIN (COntrole Permanent INformatisé). Cette application est générée par un progiciel, Builder, édité par ENABLON. Builder étant passé de la version 5.7 à la version 6, l'application devait être regénérée, ce qui demande beaucoup de travail. Pour effectuer la migration de l'application, nous devions recréer les formulaires definissant les écrans et les tables de COPIN; le problème étant que les nouveaux formulaires n'étaient pas rétrocompatibles de même que les librairies fournies avec l'environnement builder avaient changées, il fallait donc réussir à recréer les fonctions de l'application avec les nouvelles librairies sans aucune garantie de trouver des fonctions équivalentes.
+
+\section{Automatisation des tests de l'application OASIS RC et de SAFIRv1}
+J'ai travaillé avec à automatiser des mots d'action sur l'automate de test d'OASIS RC. En effet une évolution de l'application avait demandé la création de nouveaux mots d'action et donc leurs automatisation. j'ai également participé a la maintenance de quelques mots d'action de SAFIR V1 qui souffrait de bug.
+
+\section{Gestion de congés}
+On m'a demandé en juillet de travailler sur une application interne de Logica, g2c, qui sert aux managers à gérer les congés des différents collaborateurs. L'application avait un problème d'optimisation (l'une des fonction était extremement lente). La difficulté principale était que cette application gère des bases de données, et je manquais d'experience pour pouvoir travailler seul dessus, Gaëtan LEFEBVRE m'a donc aidé en explicant les principes des requêtes SQL et en m'indiquant quelles pistes suivre pour optimiser l'application.  
