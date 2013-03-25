@@ -1,3 +1,30 @@
 \chapter{Middle Man}
- 
- 
+\paragraph{}
+Le middle man est un intermédiaire entre le noyau du jeu nethack
+et les sources permettant le dialogue avec les bots. Il s'aagit d'un module C,
+couplé d'un patch qui permet de l'installer dans le jeu.
+
+\paragraph{}
+Dans le code de nethack,
+il est installé comme une substitution aux événements qui sont relatifs
+à l'interface utilisateur. Les fonctions du middle man sont appelé lorsque le
+noyau attend une entrée clavier ou affiche un caractère sur le terminal texte.
+De cette façon, il est impossible pour le bot de "tricher" : les informations 
+collectées correspondent aux informations qu'un utilisateur peut lire à l'écran.
+
+\paragraph{}
+Lorsqu'il intercepte une attente d'entrée clavier, le middle man active le
+bot handler en lui fournissant la carte qu'il a créé au fur et à mesure des affichages.
+Il attend de la part du bot qu'il effectue des actions. 
+
+\paragraph{}
+Le middle man contient également d'autres points d'entrée permettant les collectes 
+statistiques. Ces informations correspondent aux portes cachées dans le niveau, aux portes
+ouvertes pendant la partie, aux portes secrètes totales, et à la plus grande
+profondeur du donjon atteinte.
+
+\paragraph{}
+Un nombre de tour maximal est fixé par une constante du module.
+Après ce maximum, la partie est interrompue, et les statistiques sont transmises aux modules de
+base de données.
+
