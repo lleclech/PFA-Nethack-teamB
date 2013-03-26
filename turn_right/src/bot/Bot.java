@@ -5,6 +5,7 @@ import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.Collections;
 
+
 import util.Logger;
 
 public class Bot {
@@ -57,15 +58,15 @@ public class Bot {
     }
 	
     public void doTurn(){
-	position myPosition = new position();
-	Square[] SquareTab = new square[];
+	Position myPosition = new Position(0,0);
+	Square[] squareTab = new Square[10];
 	String action;
 	
-	myPosition = getPlayerPosition;
+	myPosition = getPlayerPosition();
 	SquareTab.getSquareAround(myPosition);
 	if (dir.equals("NORTH")){
 	    
-	    if (SquareTab[2].type=HORIZONTAL_WALL){
+	    if (squareTab[2].type=HORIZONTAL_WALL){
 		double dice = Math.random();
 		if (dice > 0.7){
 		    myDir = new Direction("WEST",-1,0);
@@ -111,7 +112,7 @@ public class Bot {
 	}
        	
 	if (dir.equals("WEST")){
-	    if (SquareTab[2].type=VERTICAL_WALL){
+	    if (squareTab[2].type=VERTICAL_WALL){
 		double dice = Math.random();
 		if (dice > 0.7){
 		    myDir = new Direction("SOUTH",0,-1);
@@ -157,7 +158,7 @@ public class Bot {
 	    }
 
 	    if (dir.equals("SOUTH")){
-		if (SquareTab[8].type=HORIZONTAL_WALL){
+		if (squareTab[8].type=HORIZONTAL_WALL){
 		    double dice = Math.random();
 		    if (dice > 0.7){
 			myDir = new Direction("EAST",1,0);
@@ -203,7 +204,7 @@ public class Bot {
 		}
 	    }
 	    if (dir.equals("EAST")) {
-		if (SquareTab[8].type=VERTICAL_WALL){
+		if (squareTab[8].type=VERTICAL_WALL){
 		    double dice = Math.random();
 		    if (dice > 0.7){
 			myDir = new Direction("NORTH",1,0);
@@ -236,7 +237,7 @@ public class Bot {
 		    double dice = Math.random();
 		    if (dice < 0.7){
 			myParser.broadcastSearch();
-		    nextTurn();
+			nextTurn();
 		    }
 		    else
 			{
@@ -245,34 +246,38 @@ public class Bot {
 			    myParser.broadcastMove(myDir);
 			    nextTurn();
 			}
-		
 		}
+		
+	    }
 	}
-    }
+	}
 	
-	public square[10] getSquareAround(position p)
-    {
-	position Position_no = new Position(p.line+1,p.column-1);
-	position Position_n = new Position(p.line+1,p.column);
-	position Position_ne = new Position(p.line+1,p.column+1);
-	position Position_e = new Position(p.line,p.column+1);
-	position Position_se = new Position(p.line-1,p.column+1);
-	position Position_s = new Position(p.line-1,p.column);
-	position Position_so = new Position(p.line-1,p.column-1);
-	position Position_o = new Position(p.line,p.column-1);
-	square SquareTab[10];
-	SquareTab[1] = getSquare(Position_no);
-	SquareTab[2] = getSquare(Position_n);
-	SquareTab[3] = getSquare(Position_ne);
-	SquareTab[4] = getSquare(Position_o);
-	SquareTab[6] = getSquare(Position_e);
-	SquareTab[7] = getSquare(Position_so);
-	SquareTab[8] = getSquare(Position_s);
-	SquareTab[9] = getSquare(Position_no);
-	return SquareTab;
     }
     
-
+	
+    public Square[] getSquareAround(Position p)
+    {
+	Position position_no = new Position(p.line+1,p.column-1);
+	Position position_n = new Position(p.line+1,p.column);
+	Position position_ne = new Position(p.line+1,p.column+1);
+	Position position_e = new Position(p.line,p.column+1);
+	Position position_se = new Position(p.line-1,p.column+1);
+	Position position_s = new Position(p.line-1,p.column);
+	Position position_so = new Position(p.line-1,p.column-1);
+	Position position_o = new Position(p.line,p.column-1);
+	Square [] squareTab = new Square[10];
+	squareTab[1] = getSquare(position_no);
+	squareTab[2] = getSquare(position_n);
+	squareTab[3] = getSquare(position_ne);
+	squareTab[4] = getSquare(position_o);
+	squareTab[6] = getSquare(position_e);
+	squareTab[7] = getSquare(position_so);
+	squareTab[8] = getSquare(position_s);
+	squareTab[9] = getSquare(position_no);
+	return SquareTab;
+    }
+	
+	
     public void randomAction(){
 	double dice = Math.random();
 	if (dice > 0.7)
@@ -321,3 +326,4 @@ public class Bot {
 	return sb.toString();
     }
 }
+

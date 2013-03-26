@@ -1,4 +1,11 @@
 \chapter{Presentation de l'architecture}
-	- Découpage en modules
-	- Explication du rôle de chacun
 
+\includegraphics[width=140mm]{Images/new_archi.jpeg}
+
+\begin{description}
+\item[Bot Handler: ] Le Bot Handler est la pour traduire le langage haut niveau utilisé par le bot en commande Nethack.
+\item[Middle Man: ] le Middle Man communique les instructions Nethack au noyau du jeu et et les messages du jeu au bot via le Bot Handler.
+\item[Interface Middle Man: ] L'interface Middle Man transfert les statistiques et les caractéristiques d'une partie dans la base de donnée.
+\item[DB Manager :] Le DB Manager est un module contenant les fonctions de manipulation de la base de donnée.
+\item[Statistic Tools:] Ce module met en pages les informations contenues dans la base de donnée.  
+\end{description}
