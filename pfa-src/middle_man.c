@@ -55,7 +55,7 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 		if (mm_turn > MAX_TURNS){
 			exit_nhwindows(NULL);
 			bot_end_game();
-			FILE * f = fopen("/home/sven/Documents/stats.txt", "w+");
+			FILE * f = fopen("stats.txt", "w+");
 			fprintf(f,"%d %d %d\n",mm_disc_sdoors, mm_nb_sdoor,mm_depth );
 			fflush(f);
 			fclose(f);

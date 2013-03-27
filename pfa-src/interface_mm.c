@@ -122,7 +122,7 @@ int get_table_name(char * buffer, struct AllData * d)
 // A compléter avec les fonctions de gestion de la bd de Louis L
 int write_into_database(struct AllData * d)
 {
-  FILE * log = fopen("/home/sven/Documents/log_pfa.txt", "w+");
+  FILE * log = fopen("log_pfa.txt", "w+");
   fprintf(log, "debug 0\n"); fflush(log);
   char * table_name;
     table_name = malloc(MAX_CHAR * sizeof(char));
