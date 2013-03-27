@@ -1,1 +1,25 @@
 \section{Interface Middle Man} 
+
+Ce module s'occupe recuperer les informations interessantes d'une partie, les formates, et les stocke via le DB manager dans la base de donnée.
+Il est principalement composé d'une structure \begin{verbatim}AllData\end{verbatim}permettant de ranger les informations d'une partie, et d'un ensemble de fonction
+qui recuperant les informations et les places dans \begin{verbatim}AllData\end{verbatim}.
+
+\subsection{AllData}
+
+Voici un exemple de structure AllData:
+
+\begin{verbatim}
+struct AllData
+{
+  int id_party;
+  struct Mod_Info mod;       // Informations sur le mod utilisé
+  struct Bot_Info bot;       // Informations sur le bot utilisé
+  struct Date date;
+  int door_lvl;         // Nombre total de portes dans le niveau généré
+  int door_disc;    // Nombre de portes découvertes
+  int steps;              // Nombre de pas effectués
+};
+\end{verbatim}
+
+il est a noté que cette structure correspond à un environnement de jeu et que si on décide de changer les informations a ranger dans la base de données, il faut modifier cette structure.
+ 
