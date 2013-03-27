@@ -1,1 +1,39 @@
-\chapter{Interface Middle Man} 
+\section{Interface Middle Man} 
+
+Ce module s'occupe recuperer les informations interessantes d'une partie, les formates, et les stocke via le DB manager dans la base de donnée.
+Il est principalement composé d'une structure "AllData"permettant de ranger les informations d'une partie, et d'un ensemble de fonction
+qui recuperant les informations et les places dans "AllData".
+
+\subsection{AllData}
+
+Voici un exemple de structure AllData:
+
+\begin{verbatim}
+struct AllData
+{
+  int id_party;
+  struct Mod_Info mod;       // Informations sur le mod utilisé
+  struct Bot_Info bot;       // Informations sur le bot utilisé
+  struct Date date;
+  int door_lvl;         // Nombre total de portes dans le niveau généré
+  int door_disc;    // Nombre de portes découvertes
+  int steps;              // Nombre de pas effectués
+};
+\end{verbatim}
+Cette structure contient toutes les informations que l'on souhaite sauvegarder dans la base de données. Il est à noter que cette structure correspond à un environnement de jeu et que si on décide de changer les informations a ranger dans la base de données, il faut modifier cette structure.
+ 
+\subsection{Fonctions de récuperation}
+
+voici les fonctions de récuperation pour la structure AllData pris en exemple: 
+
+\begin{description}
+\item[assign\_nb\_door\_level :] Ecris le nombre de portes découvrables pendant la partie dans la structure de données
+
+\item[assign\_nb\_door\_discovered :] Ecris le nombre de portes découvertes pendant la partie dans la structure de données. 
+
+\item[assign\_nb\_steps :] Ecris le nombre de pas effectués pendant la partie dans la structure de données.
+
+\item[assign\_nb\_monsters\_generated :] Ecris le nombre de monstres générés pendant la partie dans la structure de données.
+
+\item[assign\_nb\_monsters\_killed :] Ecris le nombre de monstres tués pendant la partie dans la structure de données.
+\end{description}
