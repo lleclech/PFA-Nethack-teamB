@@ -57,6 +57,24 @@ int math_callback(void* NotUsed, int argc, char **argv, char **azColname)
     return 0;
 }
 
+/*
+ *  Store one column from one table in global variable MATH_LIST
+ *  arguments :
+ *  void * db = pointer to the database
+ *  char * table_name
+ *    may be generated from a struct AllData * with function "get_table_name()"
+ *    or be "table_bot_Explorer_1_mod_SEARCH_DOORS_1"
+ *  char * data
+ *    may be "DAY", "MONTH", "YEAR", "DOORLVL", "DOORDISC" or "STEPS"
+ */
+void store_in_table(void * db, char * table_name, char * data)
+{
+  destroy_list_nbrs(MATH_LIST);
+  MATH_LIST = create_list_nbrs();
+  
+  search_DB(db, table_name, data, math_callback);
+}
+
 int get_mean_on_table(void * db, char * table_name, char * data)
 {
     destroy_list_nbrs(MATH_LIST);

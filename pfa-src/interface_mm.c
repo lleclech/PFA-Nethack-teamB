@@ -122,47 +122,61 @@ int get_table_name(char * buffer, struct AllData * d)
 // A compléter avec les fonctions de gestion de la bd de Louis L
 int write_into_database(struct AllData * d)
 {
-    char * table_name;
+  FILE * log = fopen("/home/sven/Documents/log_pfa.txt", "w+");
+  fprintf(log, "debug 0\n"); fflush(log);
+  char * table_name;
     table_name = malloc(MAX_CHAR * sizeof(char));
+
+  fprintf(log, "debug 1\n"); fflush(log);
 
     char * args;
     args = malloc(MAX_CHAR * sizeof(char));
+
+  fprintf(log, "debug 2\n"); fflush(log);
 
     time_t timestamp;
     struct tm * t;
     timestamp = time(NULL);
     t = localtime(&timestamp);
 
+  fprintf(log, "debug 3\n"); fflush(log);
+
     d->date.year = t->tm_year + 1900;
     d->date.month = t->tm_mon;
     d->date.day = t->tm_mday;
 
+    fprintf(log, "debug 4\n"); fflush(log);
+
     // Tester les erreurs d'assignations dans les valeurs toujours utilisées
     if (d->id_party == INIT_VAR_INT)
     {
-        printf("Error, id_party has not been assigned properly\n");
-        return EXIT_FAILURE;
+      fprintf(log, "Error, id_party has not been assigned properly\n");
+      return EXIT_FAILURE;
     }
+    fprintf(log, "debug 4.1\n"); fflush(log);
     if (d->mod.name == NULL)
     {
-        printf("Error, mod informations have not been assigned properly\n");
+      fprintf(log, "Error, mod informations have not been assigned properly\n");
         return EXIT_FAILURE;
     }
+    fprintf(log, "debug 4.2\n"); fflush(log);
     if (d->bot.name == NULL)
     {
-        printf("Error, bot informations have not been assigned properly\n");
+      fprintf(log, "Error, bot informations have not been assigned properly\n");
         return EXIT_FAILURE;
     }
+
+    fprintf(log, "debug5\n"); fflush(log);
 
     get_table_name(table_name, d);
 
     if (strcmp(d->bot.name, "Explorer") == 0)
     {
-		void *db = init_DB("Netbot_highscores");
-        create_table(db, table_name, "DAY INT, MONTH INT, YEAR INT, DOORLVL INT, DOORDISC INT, STEPS INT", NULL);
-        printf("\n\n%s\n\n", table_name);
-        sprintf(args, "%d, %d, %d, %d, %d, %d", d->date.day, d->date.month, d->date.year, d->door_lvl, d->door_disc, d->steps);
-        write_DB(db, table_name, "DAY, MONTH, YEAR, DOORLVL, DOORDISC, STEPS", args, NULL);
+      fprintf(log, "debug6\n"); fflush(log);
+      void *db = init_DB("Netbot_highscores");
+      create_table(db, table_name, "DAY INT, MONTH INT, YEAR INT, DOORLVL INT, DOORDISC INT, STEPS INT", NULL);
+      sprintf(args, "%d, %d, %d, %d, %d, %d", d->date.day, d->date.month, d->date.year, d->door_lvl, d->door_disc, d->steps);
+      write_DB(db, table_name, "DAY, MONTH, YEAR, DOORLVL, DOORDISC, STEPS", args, NULL);
     }
     else
     {

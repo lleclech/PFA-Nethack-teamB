@@ -7,7 +7,7 @@ NHDIR= ../nh-setup/nethack-3.4.3
 all: pfa test 
 
 export PFADIR=../../pfa-src
-export PFAOBJ=bot_handler.o middle_man.o 
+export PFAOBJ=bot_handler.o middle_man.o interface_mm.o math_tool.o prmath.o db_manager.o
 
 test: test_bot_handler.o bot_handler.o $(wildcard *.h)
 	${CC} -o $@ $^ ${LFLAGS}

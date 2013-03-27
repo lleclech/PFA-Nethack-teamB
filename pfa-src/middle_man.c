@@ -4,6 +4,7 @@
 #include "math_tool.h"
 #include <string.h>
 #include <assert.h>
+#include <sqlite3.h>
 
 #define MM_FIFO_LENGTH 100
 #define MAX_TURNS 10000
@@ -54,15 +55,16 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 		if (mm_turn > MAX_TURNS){
 			exit_nhwindows(NULL);
 			bot_end_game();
-			FILE *f = fopen("mm_stats.txt","a");
+			FILE * f = fopen("/home/sven/Documents/stats.txt", "w+");
 			fprintf(f,"%d %d %d\n",mm_disc_sdoors, mm_nb_sdoor,mm_depth );
 			fflush(f);
 			fclose(f);
-			/*
+
 			MATH_LIST = create_list_nbrs();
 			void * db = init_DB("Netbot_highscores");
 			char * table_name = malloc(100*sizeof(char)); // Name of the table where datas "d" are to be stored
-			struct AllData *d = init_AllData();
+			struct AllData * d = init_AllData();
+			d->id_party = 42;
 			assign_mod(d ,"SEARCH_DOORS", 1);
 			assign_bot(d ,"Explorer", 1);
 			assign_nb_door_level(d, mm_nb_sdoor); 
@@ -85,7 +87,7 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 			printf("Median : %d\n", get_median_on_table(db, table_name, "STEPS"));
 			printf("Standard Deviation : %d\n", get_std_deviation_on_table(db, table_name, "STEPS"));
 			destroy_AllData(d);
-			*/
+			
 			terminate(EXIT_SUCCESS);
 		}
 		else {
