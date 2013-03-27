@@ -1,16 +1,16 @@
-\chapter{Bot Handler}
+\section{Bot Handler}
 
-\paragraph{}
+%\paragraph{}
 Le bot handler est l'ensemble de fonctions permettant assurant le dialogue
 entre le bot et le noyau du jeu. Il s'agit d'un module C qui dépend uniquement de
 l'interface fournie par le middle man.
 
-\paragraph{}
+%\paragraph{}
 Le bot handler assure la traduction des entrées clavier comprises par nethack en 
 leur équivalent en un langage plus lisible. Il balise et construit les messages destinés
 au bot, et assure la traduction inverse des messages qu'il reçoit de la part du bot.
 
-\paragraph{}
+%\paragraph{}
 Le bot handler attend la connexion d'un bot sur un port réseau, constant dans le module.
 A chaque tour correspond l'envoi d'un message sur ce canal, puis une écoute de la réponse
 correspondante. La réponse est traduite en entrée clavier nethack puis transmises au middle man.
