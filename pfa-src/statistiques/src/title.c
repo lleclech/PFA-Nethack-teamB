@@ -17,7 +17,7 @@ void title__uninit(struct Title* title)
 
 struct Title* title__malloc()
 {
-	struct Title* title = (struct Title*)malloc(sizeof(struct Title));
+	struct Title* title = STAT_MALLOC_1(struct Title);
 	if(title != NULL)
 		title__init(title);
 	return title;
@@ -29,10 +29,10 @@ void title__free(struct Title* title)
 	free(title);
 }
 
-void title__print(struct Title* title, const char* subtitle)
+void title__fprint(FILE* STAT_FP, const struct Title* title, const char* subtitle)
 {
 	ATTRIBUTE_BEGIN(subtitle);
 	if(title->text != NULL)
-		printf("text:'%s',", title->text);
+		STAT_PRINTF("text:'%s',", title->text);
 	ATTRIBUTE_END;
 }

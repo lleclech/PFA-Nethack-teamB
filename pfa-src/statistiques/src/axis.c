@@ -8,27 +8,66 @@
 void axis__init(struct Axis* axis)
 {
 	title__init(&(axis->title));
-	axis->nbCategories = CATEGORY_INT;
-	axis->category_int = NULL;
+  axis__init_category(axis, CATEGORY_INT, 0);
 }
 
 void axis__uninit(struct Axis* axis)
 {
 	title__uninit(&(axis->title));
-	switch(axis->categorytype)
+	axis__uninit_category(axis);
+}
+
+void axis__init_category(struct Axis* axis, 
+                         unsigned int categorytype, 
+                         unsigned int nbCategories)
+{
+  axis->categorytype = categorytype;
+  axis->nbCategories = nbCategories;
+  axis->category_int = NULL;
+
+  if(nbCategories > 0)
+  {
+    switch(categorytype)
+    {
+    case CATEGORY_INT:
+      axis->category_int = STAT_MALLOC(int, nbCategories);
+      break;
+    case CATEGORY_STR:
+      axis->category_str = STAT_MALLOC(char*, nbCategories);
+      {
+        unsigned int i = 0;
+        for(; i < nbCategories; ++i)
+          axis->category_str[i] = NULL;
+      }
+      break;
+    }
+  }
+}
+
+void axis__uninit_category(struct Axis* axis)
+{
+  switch(axis->categorytype)
 	{
 	case CATEGORY_INT:
 		SAFE_FREE(axis->category_int);
 		break;
 	case CATEGORY_STR:
+    {
+      unsigned int i = 0;
+      for(; i < axis->nbCategories; ++i)
+        SAFE_FREE(axis->category_str[i]);
+    }
 		SAFE_FREE(axis->category_str);
 		break;
 	}
+
+  axis->categorytype = CATEGORY_INT;
+  axis->nbCategories = 0;
 }
 
 struct Axis* axis__malloc()
 {
-	struct Axis* axis = (struct Axis*)malloc(sizeof(struct Axis));
+	struct Axis* axis = STAT_MALLOC_1(struct Axis);
 	if(axis != NULL)
 		axis__init(axis);
 	return axis;
@@ -41,11 +80,11 @@ void axis__free(struct Axis* axis)
 }
 
 
-void axis__print(struct Axis* axis, const char* name)
+void axis__fprint(FILE* STAT_FP, const struct Axis* axis, const char* name)
 {
 	unsigned int i;
 	ATTRIBUTE_BEGIN(name);
-	title__print(&(axis->title), "title");
+	title__fprint(fp, &(axis->title), "title");
 
 	if(axis->nbCategories > 0)
 	{
@@ -53,14 +92,14 @@ void axis__print(struct Axis* axis, const char* name)
 		for (i = 0; i < axis->nbCategories; ++i)
 		{
 			if(i > 0)
-				putchar(',');
+        STAT_PUTC(',');
 			switch(axis->categorytype)
 			{
 			case CATEGORY_INT:
-				printf("%d", axis->category_int[i]);
+				STAT_PRINTF("%d", axis->category_int[i]);
 				break;
 			case CATEGORY_STR:
-				printf("'%s'", axis->category_str[i]);
+				STAT_PRINTF("'%s'", axis->category_str[i]);
 				break;
 			}
 		}

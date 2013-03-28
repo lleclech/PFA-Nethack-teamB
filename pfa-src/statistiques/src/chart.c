@@ -23,7 +23,7 @@ void chart__uninit(struct Chart* chart)
 
 struct Chart* chart__malloc()
 {
-	struct Chart* chart = (struct Chart*)malloc(sizeof(struct Chart));
+	struct Chart* chart = STAT_MALLOC_1(struct Chart);
 	if(chart != NULL)
 		chart__init(chart);
 	return chart;
@@ -35,16 +35,14 @@ void chart__free(struct Chart* chart)
 	free(chart);
 }
 
-void chart__print(struct Chart* chart)
+void chart__fprint(FILE* STAT_FP, const struct Chart* chart)
 {
 	unsigned int type = chart->type;
 	ATTRIBUTE_BEGIN("chart");
-	printf("renderTo:'%s',", chart->renderTo);
+  STAT_PRINTF("renderTo:'%s',", chart->renderTo);
 	if(type < CHART_TYPE_COUNT)
-  {
-		printf("type:'%s',", chart_type_str[type]);
-  }
+		STAT_PRINTF("type:'%s',", chart_type_str[type]);
 	if(chart->inverted)
-		printf("inverted:true,");
+		STAT_PRINTF("inverted:true,");
 	ATTRIBUTE_END;
 }

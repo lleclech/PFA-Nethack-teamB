@@ -23,10 +23,16 @@ void axis__init(struct Axis* axis);
 
 void axis__uninit(struct Axis* axis);
 
+void axis__init_category(struct Axis* axis, 
+                         unsigned int categorytype, 
+                         unsigned int nbCategories);
+
+void axis__uninit_category(struct Axis* axis);
+
 struct Axis* axis__malloc();
 
 void axis__free(struct Axis* axis);
 
-void axis__print(struct Axis* axis, const char* name);
+void axis__fprint(FILE* fp, const struct Axis* axis, const char* name);
 
 #endif /* __AXIS_H__ */

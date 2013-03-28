@@ -1,6 +1,8 @@
 #ifndef __HIGHCHART_H__
 #define __HIGHCHART_H__
 
+#include <stdio.h>
+
 #include "axis.h"
 #include "serie.h"
 #include "title.h"
@@ -16,7 +18,7 @@ struct Highchart {
 	struct Axis xAxis;
 	struct Axis yAxis;
 	struct PlotOptions plotoptions;
-	int label;
+  // series
 	unsigned int nSeries;
 	struct Serie* series;
 };
@@ -29,6 +31,32 @@ struct Highchart* highchart__malloc();
 
 void highchart__free(struct Highchart* highchart);
 
-void highchart__print(struct Highchart* highchart);
+void highchart__fprint(FILE* fp, const struct Highchart* highchart);
+
+void highchart__set_render_target(struct Highchart* highchart, const char* target);
+
+void highchart__set_title(struct Highchart* highchart, const char* title);
+
+void highchart__set_subtitle(struct Highchart* highchart, const char* subtitle);
+
+#define AXIS_X 0
+#define AXIS_Y 1
+void highchart__set_axis_title(struct Highchart* highchart, unsigned int axis, const char* title);
+
+void highchart__set_axis_category(struct Highchart* highchart, 
+                                  unsigned int axis, 
+                                  unsigned int categorytype, 
+                                  unsigned int nbCategories);
+
+
+void highchart__uninit_series(struct Highchart* highchart);
+
+void highchart__set_series(struct Highchart* highchart, unsigned int nSeries);
+
+void highchart__set_serie(struct Highchart* highchart, int serie, int datatype, int nbData);
+
+void highchart__set_serie_name(struct Highchart* highchart, int serie, const char* name);
+
+void highchart__set_plotoption(struct Highchart* highchart, int option, int enable);
 
 #endif /* __HIGHCHART_H__ */

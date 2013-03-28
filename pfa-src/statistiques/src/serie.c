@@ -26,7 +26,7 @@ void serie__uninit(struct Serie* serie)
 
 struct Serie* serie__malloc()
 {
-	struct Serie* serie = (struct Serie*)malloc(sizeof(struct Serie));
+	struct Serie* serie = STAT_MALLOC_1(struct Serie);
 	if(serie != NULL)
 		serie__init(serie);
 	return serie;
