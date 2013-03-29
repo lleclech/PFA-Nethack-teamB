@@ -6,7 +6,7 @@ diff -ur nethack-3.4.3.back/Makefile nethack-3.4.3/Makefile
  
  # make NetHack
 -PREFIX	 = /usr
-+PREFIX	 = ~
++PREFIX	 = $(PWD)
  GAME     = nethack
  # GAME     = nethack.prg
 -GAMEUID  = games

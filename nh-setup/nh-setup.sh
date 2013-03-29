@@ -6,33 +6,29 @@ dlurl="http://downloads.sourceforge.net/project/nethack/nethack/3.4.3/nethack-34
 patchdir="../patches"
 pfadir="../pfa-src"
 
-apply_patch () {
-    for i in `ls $patchdir`; do
-        read -p "Apply $i? [Y/n]" yn
-
-        case $yn in
-            Y|y|"" ) patch -p2 < $patchdir/$i;;
-            * ) ;;
-        esac
-    done
-}
-
 dl_nethack () {
     if [ ! -e $nharchive ]; then
         read -p "$nharchive not found, automatically download it now? [Y/n]" yn
 
         case $yn in
-            Y|y|"" ) wget $dlurl;;
+            Y|y|"" ) wget $dlurl && apply_patch;;
             * ) exit;;
         esac
     fi
 
     echo "Extracting... "
     tar -xf $nharchive
+    echo "Running NetHack's setup script... "
+    cd $nhdir
+    sh sys/unix/setup.sh
+    cd ..
+    patch -p0 < linux_install.patch
+    echo "Applying patches... "
+    for i in `ls $patchdir`; do
+        patch -p2 < $patchdir/$i;
+    done
 }
 
-
-reuse=0
 
 if [ -d $nhdir ]; then
     read -p "Use existing $nhdir ? [Y/n]" yn
@@ -56,23 +52,6 @@ fi
 #        * ) echo "please answer 'y' or 'n'"; exit;;
 #    esac
 #fi
-
-
-if [ $reuse = 0 ]; then
-    echo "Running NetHack's setup script... "
-    cd $nhdir
-    sh sys/unix/setup.sh
-    cd ..
-    patch -p0 < linux_install.patch
-fi
-
-if [ -d $patchdir ]; then
-    read -p "Apply game patches ? [Y/n]" yn
-        case $yn in
-            Y|y|"" ) apply_patch;;
-            * ) ;;
-        esac
-fi
 
 cd $pfadir && make pfa
 
