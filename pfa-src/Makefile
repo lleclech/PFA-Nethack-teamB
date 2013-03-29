@@ -9,9 +9,6 @@ all: pfa test bot_rw bot_sp
 export PFADIR=../../pfa-src
 export PFAOBJ=bot_handler.o middle_man.o interface_mm.o math_tool.o prmath.o db_manager.o
 
-test: test_bot_handler.o bot_handler.o $(wildcard *.h)
-	${CC} -o $@ $^ ${LFLAGS}
-
 pfa: $(PFAOBJ) 
 	@( mv $(PFAOBJ) $(NHDIR)/src; cd $(NHDIR); $(MAKE) && $(MAKE) install)
 
@@ -26,12 +23,6 @@ makedefs:
 
 %.o: %.c $(wildcard *.h) makedefs
 	$(CC) $(CFLAGS) -c $< 
-
-run_test: test
-	@./test
-
-run_valgrind: test
-	valgrind ./test
 
 clean:
 	@rm -f *~ *.o test
