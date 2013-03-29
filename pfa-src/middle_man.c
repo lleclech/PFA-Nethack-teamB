@@ -94,7 +94,7 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 			fclose(f);
 
 			MATH_LIST = create_list_nbrs();
-			void * db = init_DB("../../Netbot_highscores");
+			void * db = init_DB("Netbot_highscores");
 			char * table_name = malloc(100*sizeof(char)); // Name of the table where datas "d" are to be stored
 			struct AllData * d = init_AllData();
 			d->id_party = get_id_party();

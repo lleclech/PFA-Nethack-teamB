@@ -117,8 +117,6 @@ int destroy_AllData(struct AllData * d)
 int get_table_name(char * buffer, struct AllData * d)
 {
     sprintf(buffer, "table_bot_%s_%d_mod_%s_%d", d->bot.name, d->bot.id, d->mod.name, d->mod.id);
-    FILE * fdebug = fopen("../../debug.txt", "w+");
-    fprintf(fdebug, "%s", buffer); fflush(fdebug);
     return EXIT_SUCCESS;
 }
 
@@ -164,7 +162,7 @@ int write_into_database(struct AllData * d)
 
     if ((strcmp(d->bot.name, "AdvancedRandomBot") == 0) | (strcmp(d->bot.name, "RandomBot") == 0))
     {
-      void *db = init_DB("../../Netbot_highscores");
+      void *db = init_DB("Netbot_highscores");
       create_table(db, table_name, "DAY INT, MONTH INT, YEAR INT, DOORLVL INT, DOORDISC INT, DEPTH INT", NULL);
       sprintf(args, "%d, %d, %d, %d, %d, %d", d->date.day, d->date.month, d->date.year, d->door_lvl, d->door_disc, d->depth);
       write_DB(db, table_name, "DAY, MONTH, YEAR, DOORLVL, DOORDISC, DEPTH", args, NULL);
