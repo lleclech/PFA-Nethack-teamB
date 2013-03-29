@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 #include <sqlite3.h>
 
@@ -188,7 +189,7 @@ int main(int argc, char** argv)
     for(i = 0; i < nChart; ++i)
       highchart__init(highchart + i);
 
-    float v, *ave = STAT_MALLOC(float, nTable);
+    float *ave = STAT_MALLOC(float, nTable), *dev = STAT_MALLOC(float, nTable);
 
     // for every bot
     for(i = 0; i < nTable; ++i)
@@ -227,12 +228,23 @@ int main(int argc, char** argv)
       ave[i] = 0;
       highchart__set_serie_name(chart, k, "PERCENTAGE");
       highchart__set_serie(chart, SERIE_TYPE_COLUMN, 0, k, SERIE_DATATYPE_FLOAT, nData[i]);
+      float *tmp = STAT_MALLOC(float, nData[i]);
       for(j = 0; j < nData[i]; ++j)
       {
-        serie->data_float[j] = v = datas[i][j].doordisc / (float)datas[i][j].doorlvl;
-        ave[i] += v;
+        serie->data_float[j] = tmp[j] = datas[i][j].doordisc / (float)datas[i][j].doorlvl;
+        ave[i] += tmp[j];
       }
       ave[i] /= nData[i];
+
+      dev[i] = 0;
+      for(j = 0; j < nData[i]; ++j)
+      {
+        float v = tmp[j] - ave[i];
+        dev[i] += v * v;
+      }
+      dev[i] = sqrtf(dev[i] / nData[i]);
+
+      SAFE_FREE(tmp);
 
       // doorlvl
       ++serie; ++k;
@@ -252,6 +264,8 @@ int main(int argc, char** argv)
     // general data
     chart = highchart;
     chart->chart.type = CHART_TYPE_BAR;
+    chart->plotoptions.series_stacking = STACKING_NORMAL;
+
     highchart__set_render_target(chart, "avepercent");
     highchart__set_title(chart, "Average Percentage");
 
@@ -267,14 +281,22 @@ int main(int argc, char** argv)
     highchart__set_plotoption(chart, PLOTOPTIONS_DATALABELS, 1);
     highchart__set_plotoption(chart, PLOTOPTIONS_MOUSETRACKING, 0);
 
-    highchart__set_series(chart, 1);
-    serie = chart->series;
-    highchart__set_serie_name(chart, 0, "percentage");
-    highchart__set_serie(chart, SERIE_TYPE_NON, -1, 0, SERIE_DATATYPE_FLOAT, nTable);
+    highchart__set_series(chart, 2);
+    serie = chart->series; j = 0;
+    
+    highchart__set_serie_name(chart, j, "deviation");
+    highchart__set_serie(chart, SERIE_TYPE_NON, -1, j, SERIE_DATATYPE_FLOAT, nTable);
+    for(i = 0; i < nTable; ++i)
+      serie->data_float[i] = dev[i];
+
+    ++serie; ++j;
+    highchart__set_serie_name(chart, j, "average");
+    highchart__set_serie(chart, SERIE_TYPE_NON, -1, j, SERIE_DATATYPE_FLOAT, nTable);
     for(i = 0; i < nTable; ++i)
       serie->data_float[i] = ave[i];
 
     SAFE_FREE(ave);
+    SAFE_FREE(dev);
 
     // generate html
     FILE* fp = fopen(argv[2], "w");
