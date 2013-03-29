@@ -115,6 +115,7 @@ static void parse_botcmd(char * botcmd)
 	}
 	else if (strncmp(botcmd, "FORCE", alen) == 0) {
 		mm_keypress('\4');
+
 	}
 	else if (strncmp(botcmd, "MOVE", alen) == 0) {
 	}
