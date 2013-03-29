@@ -4,7 +4,8 @@ INCLUDE = ../nh-setup/nethack-3.4.3/include/
 CFLAGS=-Wall -Wextra -I $(INCLUDE)
 LFLAGS=
 NHDIR= ../nh-setup/nethack-3.4.3
-all: pfa test 
+BOTDIR=bot
+all: pfa test bot_rw bot_sp
 
 export PFADIR=../../pfa-src
 export PFAOBJ=bot_handler.o middle_man.o interface_mm.o math_tool.o prmath.o db_manager.o
@@ -14,6 +15,11 @@ test: test_bot_handler.o bot_handler.o $(wildcard *.h)
 
 pfa: $(PFAOBJ) 
 	@( mv $(PFAOBJ) $(NHDIR)/src; cd $(NHDIR); $(MAKE) && $(MAKE) install)
+
+bot_sp:
+	$0 java_starter_package/build.sh
+bot_rw:
+	$0 java_rand_walk/build.sh
 
 makedefs:
 	@( cd $(NHDIR); cd util ; \
