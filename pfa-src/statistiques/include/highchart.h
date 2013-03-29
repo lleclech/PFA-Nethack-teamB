@@ -15,8 +15,13 @@ struct Highchart {
 	struct Chart chart;
 	struct Title title;
 	struct Title subtitle;
-	struct Axis xAxis;
-	struct Axis yAxis;
+
+  // axis
+  unsigned int nXAxis;
+	struct Axis* xAxis;
+  unsigned int nYAxis;
+	struct Axis* yAxis;
+
 	struct PlotOptions plotoptions;
   // series
 	unsigned int nSeries;
@@ -39,12 +44,25 @@ void highchart__set_title(struct Highchart* highchart, const char* title);
 
 void highchart__set_subtitle(struct Highchart* highchart, const char* subtitle);
 
-#define AXIS_X 0
-#define AXIS_Y 1
-void highchart__set_axis_title(struct Highchart* highchart, unsigned int axis, const char* title);
+void highchart__init_axis(struct Highchart* highchart,
+                          unsigned int axis,
+                          unsigned int nb);
+
+void highchart__uninit_axis(struct Highchart* highchart, 
+                            unsigned int axis);
+
+struct Axis* highchart__get_axis(struct Highchart* highchart, 
+                                 unsigned int axis,
+                                 unsigned int ind);
+
+void highchart__set_axis_title(struct Highchart* highchart, 
+                               unsigned int axis, 
+                               unsigned int ind,
+                               const char* title);
 
 void highchart__set_axis_category(struct Highchart* highchart, 
                                   unsigned int axis, 
+                                  unsigned int ind,
                                   unsigned int categorytype, 
                                   unsigned int nbCategories);
 
@@ -53,7 +71,12 @@ void highchart__uninit_series(struct Highchart* highchart);
 
 void highchart__set_series(struct Highchart* highchart, unsigned int nSeries);
 
-void highchart__set_serie(struct Highchart* highchart, int serie, int datatype, int nbData);
+void highchart__set_serie(struct Highchart* highchart, 
+                          int type,
+                          int axis,
+                          unsigned int serie, 
+                          unsigned int datatype, 
+                          unsigned int nbData);
 
 void highchart__set_serie_name(struct Highchart* highchart, int serie, const char* name);
 

@@ -93,7 +93,7 @@ int main(int argc, char** argv)
 
   char buffer[1024];
   char* zErrMsg = 0;
-  int i, j, rc;
+  int i, j, k, rc;
   
   // open database
   sqlite3 *db;
@@ -192,32 +192,49 @@ int main(int argc, char** argv)
       highchart__set_render_target(highchart + i, tablenames[i]);
       highchart__set_title(highchart + i, tablenames[i]);
 
-      highchart__set_axis_title(highchart + i, AXIS_X, "date");
-      highchart__set_axis_category(highchart + i, AXIS_X, CATEGORY_STR, nData[i]);
+      // xAxis
+      highchart__init_axis(highchart + i, AXIS_X, 1);
+      highchart__set_axis_title(highchart + i, AXIS_X, 0, "date");
+      highchart__set_axis_category(highchart + i, AXIS_X, 0, CATEGORY_STR, nData[i]);
 
       for(j = 0; j < nData[i]; ++j)
       {
         sprintf(buffer, "%d-%d-%d", datas[i][j].day, datas[i][j].month, datas[i][j].year);
-        highchart[i].xAxis.category_str[j] = str__dup(buffer);
+        highchart[i].xAxis[0].category_str[j] = str__dup(buffer);
       }
 
+      // yAxis
+      highchart__init_axis(highchart + i, AXIS_Y, 2);
+      highchart__set_axis_title(highchart + i, AXIS_Y, 0, "percentage");
+      highchart__set_axis_title(highchart + i, AXIS_Y, 1, "number of doors");
+
+      // plotoptions
       highchart__set_plotoption(highchart + i, PLOTOPTIONS_DATALABELS, 1);
       highchart__set_plotoption(highchart + i, PLOTOPTIONS_MOUSETRACKING, 0);
 
-      highchart__set_series(highchart + i, 2);
+      // series
+      highchart__set_series(highchart + i, 3);
       
       struct Serie* serie = highchart[i].series;
+      k = 0;
       
+      // percentage
+      highchart__set_serie_name(highchart + i, k, "PERCENTAGE");
+      highchart__set_serie(highchart + i, SERIE_TYPE_COLUMN, 0, k, SERIE_DATATYPE_FLOAT, nData[i]);
+      for(j = 0; j < nData[i]; ++j)
+        serie->data_float[j] = datas[i][j].doordisc / (float)datas[i][j].doorlvl;
+
       // doorlvl
-      highchart__set_serie_name(highchart + i, 0, "DOORLVL");
-      highchart__set_serie(highchart + i, 0, SERIE_DATATYPE_INT, nData[i]);
+      ++serie; ++k;
+      highchart__set_serie_name(highchart + i, k, "DOORLVL");
+      highchart__set_serie(highchart + i, SERIE_TYPE_LINE, 1, k, SERIE_DATATYPE_INT, nData[i]);
       for(j = 0; j < nData[i]; ++j)
         serie->data_int[j] = datas[i][j].doorlvl;
 
       // doordisc
-      ++serie;
-      highchart__set_serie_name(highchart + i, 1, "DOORDISC");
-      highchart__set_serie(highchart + i, 1, SERIE_DATATYPE_INT, nData[i]);
+      ++serie; ++k;
+      highchart__set_serie_name(highchart + i, k, "DOORDISC");
+      highchart__set_serie(highchart + i, SERIE_TYPE_LINE, 1, k, SERIE_DATATYPE_INT, nData[i]);
       for(j = 0; j < nData[i]; ++j)
         serie->data_int[j] = datas[i][j].doordisc;
     }
