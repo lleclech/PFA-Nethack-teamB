@@ -1,2 +1,75 @@
-\section{Comment développer un bot}
+\chapter{Bot}
 
+les bots sont completement indépendant du jeu. Cela siginife qu'il peuvent être écris dans n'importe quel langage de programmation, les seuls prérequis étant de pouvoir ouvrir une socket et d'envoyer des chaînes de caractères.
+
+\section{Développer un bot}
+
+\subsection{Etablir la communication avec Nethack}
+Le bot et Nethack communiquent via une socket dont le port est 4242 (le port est écris en dur dans le code).
+
+\subsection{Envoyer des ordres}
+Le bot doit utiliser un langage haut niveau pour communiquer ses ordres au jeu.
+
+
+Voici les actions disponibles:
+
+\begin{description}
+\item[SEARCH :] permet de rechercher une porte secrète.
+\item[OPEN :] permet d'ouvrir une porte.
+\item[FORCE :] permet de forcer l'ouverture d'une porte.
+\item[MOVE :] permet de se déplacer.
+\item[DOWN :] permet de descendre des escalier. 
+\item[UP :] permet de monter des escalier.
+\end{description}
+
+Et voici les possibilité d'orientation des ordres:
+
+\begin{description}
+\item[NORTH :] permet de viser vers le haut.
+\item[NORTH\_EAST :] permet de viser en haut à droite.
+\item[EAST :] permet de viser à droite.
+\item[SOUTH\_EAST :] permet de viser en bas à droite.
+\item[SOUTH :] permet de viser en bas.
+\item[SOUTH\_WEST :] permet de viser en bas à gauche.
+\item[WEST :] permet de viser à gauche.
+\item[NORTH\_WEST :] permet de viser en haut à gauche.
+\end{description}
+
+Le bot ne peut envoyer qu'un ordre par tour. Une fois celui-ci envoyé il faut donc se mettre a l'écoute du jeu qui va nous envoyer un certain nombre d'information (par exemple la carte du jeu).
+
+\subsection{Information renvoyée par le jeu}
+Lorsque le jeu reçoit un ordre, il l'applique, puis renvoie la carte mise à jour sous la forme d'une chaîne de caractère. Si l'on souhaite avoir un bot un peu évolué, il peut être interessant de la stocker. 
+
+la chaine de caractère envoyée par le jeu a pour forme:
+\begin{verbatim}
+
+\end{verbatim}
+
+\section{Exemple d'un bot codé en java}
+
+Nous avons codés deux bots relativement simple en java. L'un est completement aléatoire, l'autre est plus évolué. Nous allons ici décrire le fonctionnement du second.
+
+\subsection{Diagramme de classe}
+
+Voir l'annexe.
+ 
+\subsection{Description }
+
+\begin{description}
+\item[Map :]
+\item[Bot :]
+\item[InputOutputUnit :]
+\item[Square :]
+\item[SquareType :]
+\item[Protocole :]
+\item[StepMap :]
+\item[Direction :]
+\item[Information :]
+\item[Position :]
+\item[Variables :]
+\item[Direction :]
+\item[Logger :]
+\item[UnknownPositionException :]
+\item[LaunchBot :]
+
+\end{description} 
