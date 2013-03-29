@@ -11,20 +11,81 @@ void highchart__init(struct Highchart* highchart)
 	chart__init(&(highchart->chart));
 	title__init(&(highchart->title));
 	title__init(&(highchart->subtitle));
-	axis__init(&(highchart->xAxis));
-	axis__init(&(highchart->yAxis));
+
+  highchart__init_axis(highchart, AXIS_X, 0);
+  highchart__init_axis(highchart, AXIS_Y, 0);
+
   plotOptions__init(&(highchart->plotoptions), &(highchart->chart));
 	highchart->nSeries = 0;
 	highchart->series = NULL;
 }
 
+void highchart__init_axis(struct Highchart* highchart,
+                          unsigned int axis,
+                          unsigned int nb)
+{
+  unsigned int i;
+  if(axis == AXIS_X)
+  {
+    highchart->nXAxis = nb;
+    if(nb > 0)
+    {
+      highchart->xAxis = STAT_MALLOC(struct Axis, nb);
+      for(i = 0; i < nb; ++i)
+        axis__init(highchart->xAxis + i);
+    }
+    else
+      highchart->xAxis = NULL;
+  }
+  else if(axis == AXIS_Y)
+  {
+    highchart->nYAxis = nb;
+    if(nb > 0)
+    {
+      highchart->yAxis = STAT_MALLOC(struct Axis, nb);
+      for(i = 0; i < nb; ++i)
+        axis__init(highchart->yAxis + i);
+    }
+    else
+      highchart->yAxis = NULL;
+  }
+}
+
+void highchart__uninit_axis(struct Highchart* highchart, unsigned int axis)
+{
+  unsigned int i;
+  if(axis == AXIS_X)
+  {
+    if(highchart->nXAxis > 0)
+    {
+      for(i = 0; i < highchart->nXAxis; ++i)
+  	    axis__uninit(highchart->xAxis + i);
+      SAFE_FREE(highchart->xAxis);
+      highchart->nXAxis = 0;
+    }
+  }
+  else if(axis == AXIS_Y)
+  {
+    if(highchart->nYAxis > 0)
+    {
+      for(i = 0; i < highchart->nYAxis; ++i)
+  	    axis__uninit(highchart->yAxis + i);
+      SAFE_FREE(highchart->yAxis);
+      highchart->nYAxis = 0;
+    }
+  }
+}
+
 void highchart__uninit(struct Highchart* highchart)
 {
+  
 	chart__uninit(&(highchart->chart));
 	title__uninit(&(highchart->title));
 	title__uninit(&(highchart->subtitle));
-	axis__uninit(&(highchart->xAxis));
-	axis__uninit(&(highchart->yAxis));
+
+  highchart__uninit_axis(highchart, AXIS_X);
+  highchart__uninit_axis(highchart, AXIS_Y);
+  
   plotOptions__uninit(&(highchart->plotoptions));
   highchart__uninit_series(highchart);
 }
@@ -45,42 +106,18 @@ void highchart__free(struct Highchart* highchart)
 
 void highchart__fprint(FILE* STAT_FP, const struct Highchart* highchart)
 {
-	unsigned int i, j;
-
 	STAT_PRINTF("=new Highcharts.Chart({");
 
-	chart__fprint(fp, &(highchart->chart));
-	title__fprint(fp, &(highchart->title), "title");
-	title__fprint(fp, &(highchart->subtitle), "subtitle");
-	axis__fprint(fp, &(highchart->xAxis), "xAxis");
-	axis__fprint(fp, &(highchart->yAxis), "yAxis");
-  plotOptions__fprint(fp, &(highchart->plotoptions));
+	chart__fprint(STAT_FP, &(highchart->chart));
+	title__fprint(STAT_FP, &(highchart->title), "title");
+	title__fprint(STAT_FP, &(highchart->subtitle), "subtitle");
 
-	// series
-	SEQUENCE_BEGIN("series");
-	for(i = 0; i < highchart->nSeries; ++i)
-	{
-		struct Serie* serie = highchart->series + i;
-		if(i > 0)
-			STAT_PUTC(',');
-		STAT_PUTC('{');
-		if (serie->name != NULL)
-			STAT_PRINTF("name:'%s',", serie->name);
-		STAT_PRINTF("data:[");
-		for(j = 0; j < serie->nbData; ++j)
-		{
-			if(j > 0)
-				STAT_PUTC(',');
-			switch(serie->datatype)
-			{
-			case SERIE_DATATYPE_INT:
-				STAT_PRINTF("%d", serie->data_int[j]);
-				break;
-			}
-		}
-    STAT_PRINTF("]}");
-	}
-	SEQUENCE_END;
+  axis__fprint(STAT_FP, highchart->xAxis, AXIS_X, highchart->nXAxis);
+	axis__fprint(STAT_FP, highchart->yAxis, AXIS_Y, highchart->nYAxis);
+
+  plotOptions__fprint(STAT_FP, &(highchart->plotoptions));
+
+  serie__fprint(STAT_FP, highchart->series, highchart->nSeries);
 
 	STAT_PRINTF("});");
 }
@@ -103,34 +140,42 @@ void highchart__set_subtitle(struct Highchart* highchart, const char* subtitle)
   highchart->subtitle.text = str__dup(subtitle);
 }
 
-struct Axis* highchart__get_axis(struct Highchart* highchart, unsigned int axis)
+struct Axis* highchart__get_axis(struct Highchart* highchart, 
+                                 unsigned int axis,
+                                 unsigned int ind)
 {
   struct Axis* a = NULL;
   switch(axis)
   {
   case AXIS_X:
-    a = &(highchart->xAxis);
+    if(ind < highchart->nXAxis)
+      a = highchart->xAxis + ind;
     break;
   case AXIS_Y:
-    a = &(highchart->yAxis);
+    if(ind < highchart->nYAxis)
+      a = highchart->yAxis + ind;
     break;
   }
   return a;
 }
 
-void highchart__set_axis_title(struct Highchart* highchart, unsigned int axis, const char* title)
+void highchart__set_axis_title(struct Highchart* highchart, 
+                               unsigned int axis, 
+                               unsigned int ind,
+                               const char* title)
 {
-  struct Axis* a = highchart__get_axis(highchart, axis);
+  struct Axis* a = highchart__get_axis(highchart, axis, ind);
   SAFE_FREE(a->title.text);
   a->title.text = str__dup(title);
 }
 
 void highchart__set_axis_category(struct Highchart* highchart, 
                                   unsigned int axis, 
+                                  unsigned int ind,
                                   unsigned int categorytype, 
                                   unsigned int nbCategories)
 {
-  struct Axis* a = highchart__get_axis(highchart, axis);
+  struct Axis* a = highchart__get_axis(highchart, axis, ind);
   axis__uninit_category(a);
   axis__init_category(a, categorytype, nbCategories);
 }
@@ -158,25 +203,20 @@ void highchart__set_series(struct Highchart* highchart, unsigned int nSeries)
   }
 }
 
-void highchart__set_serie(struct Highchart* highchart, int serie, int datatype, int nbData)
+void highchart__set_serie(struct Highchart* highchart, 
+                          int type,
+                          int axis,
+                          unsigned int serie, 
+                          unsigned int datatype, 
+                          unsigned int nbData)
 {
   struct Serie* s = &(highchart->series[serie]);
-  switch(s->datatype)
-  {
-  case SERIE_DATATYPE_INT:
-    SAFE_FREE(s->data_int);
-    break;
-  }
+  serie__uninit_data(s);
 
-  s->datatype = datatype;
-  s->nbData = nbData;
+  s->type = type;
+  s->axis = axis;
   
-  switch(s->datatype)
-  {
-  case SERIE_DATATYPE_INT:
-    s->data_int = STAT_MALLOC(int, nbData);
-    break;
-  }
+  serie__init_data(s, datatype, nbData);
 }
 
 void highchart__set_serie_name(struct Highchart* highchart, int serie, const char* name)

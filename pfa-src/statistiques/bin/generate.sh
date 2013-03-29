@@ -1,1 +1,1 @@
-./statistiques ~/games/nethackdir/Netbot_highscores test.html
+./statistiques ~/games/nethackdir/Netbot_highscores stat.html

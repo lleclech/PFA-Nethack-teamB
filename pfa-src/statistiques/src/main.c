@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <math.h>
 
 #include <sqlite3.h>
 
@@ -93,7 +94,7 @@ int main(int argc, char** argv)
 
   char buffer[1024];
   char* zErrMsg = 0;
-  int i, j, rc;
+  int i, j, k, rc;
   
   // open database
   sqlite3 *db;
@@ -181,46 +182,121 @@ int main(int argc, char** argv)
     }
 
     // generate the charts
-    int nChart = nTable;
+    int nChart = nTable + 1;
 
-    struct Highchart* highchart = STAT_MALLOC(struct Highchart, nChart);
+    struct Highchart *chart, *highchart = STAT_MALLOC(struct Highchart, nChart);
+    struct Serie* serie;
     for(i = 0; i < nChart; ++i)
       highchart__init(highchart + i);
 
+    float *ave = STAT_MALLOC(float, nTable), *dev = STAT_MALLOC(float, nTable);
+
+    // for every bot
     for(i = 0; i < nTable; ++i)
     {
-      highchart__set_render_target(highchart + i, tablenames[i]);
-      highchart__set_title(highchart + i, tablenames[i]);
+      chart = highchart + i + 1;
+      highchart__set_render_target(chart, tablenames[i]);
+      highchart__set_title(chart, tablenames[i]);
 
-      highchart__set_axis_title(highchart + i, AXIS_X, "date");
-      highchart__set_axis_category(highchart + i, AXIS_X, CATEGORY_STR, nData[i]);
+      // xAxis
+      highchart__init_axis(chart, AXIS_X, 1);
+      highchart__set_axis_title(chart, AXIS_X, 0, "date");
+      highchart__set_axis_category(chart, AXIS_X, 0, CATEGORY_STR, nData[i]);
 
       for(j = 0; j < nData[i]; ++j)
       {
         sprintf(buffer, "%d-%d-%d", datas[i][j].day, datas[i][j].month, datas[i][j].year);
-        highchart[i].xAxis.category_str[j] = str__dup(buffer);
+        chart->xAxis[0].category_str[j] = str__dup(buffer);
       }
 
-      highchart__set_plotoption(highchart + i, PLOTOPTIONS_DATALABELS, 1);
-      highchart__set_plotoption(highchart + i, PLOTOPTIONS_MOUSETRACKING, 0);
+      // yAxis
+      highchart__init_axis(chart, AXIS_Y, 2);
+      highchart__set_axis_title(chart, AXIS_Y, 0, "percentage");
+      highchart__set_axis_title(chart, AXIS_Y, 1, "number of doors");
 
-      highchart__set_series(highchart + i, 2);
+      // plotoptions
+      highchart__set_plotoption(chart, PLOTOPTIONS_DATALABELS, 1);
+      highchart__set_plotoption(chart, PLOTOPTIONS_MOUSETRACKING, 0);
+
+      // series
+      highchart__set_series(chart, 3);
       
-      struct Serie* serie = highchart[i].series;
+      serie = chart->series;
+      k = 0;
       
+      // percentage
+      ave[i] = 0;
+      highchart__set_serie_name(chart, k, "PERCENTAGE");
+      highchart__set_serie(chart, SERIE_TYPE_COLUMN, 0, k, SERIE_DATATYPE_FLOAT, nData[i]);
+      float *tmp = STAT_MALLOC(float, nData[i]);
+      for(j = 0; j < nData[i]; ++j)
+      {
+        serie->data_float[j] = tmp[j] = datas[i][j].doordisc / (float)datas[i][j].doorlvl;
+        ave[i] += tmp[j];
+      }
+      ave[i] /= nData[i];
+
+      dev[i] = 0;
+      for(j = 0; j < nData[i]; ++j)
+      {
+        float v = tmp[j] - ave[i];
+        dev[i] += v * v;
+      }
+      dev[i] = sqrtf(dev[i] / nData[i]);
+
+      SAFE_FREE(tmp);
+
       // doorlvl
-      highchart__set_serie_name(highchart + i, 0, "DOORLVL");
-      highchart__set_serie(highchart + i, 0, SERIE_DATATYPE_INT, nData[i]);
+      ++serie; ++k;
+      highchart__set_serie_name(chart, k, "DOORLVL");
+      highchart__set_serie(chart, SERIE_TYPE_LINE, 1, k, SERIE_DATATYPE_INT, nData[i]);
       for(j = 0; j < nData[i]; ++j)
         serie->data_int[j] = datas[i][j].doorlvl;
 
       // doordisc
-      ++serie;
-      highchart__set_serie_name(highchart + i, 1, "DOORDISC");
-      highchart__set_serie(highchart + i, 1, SERIE_DATATYPE_INT, nData[i]);
+      ++serie; ++k;
+      highchart__set_serie_name(chart, k, "DOORDISC");
+      highchart__set_serie(chart, SERIE_TYPE_LINE, 1, k, SERIE_DATATYPE_INT, nData[i]);
       for(j = 0; j < nData[i]; ++j)
         serie->data_int[j] = datas[i][j].doordisc;
     }
+
+    // general data
+    chart = highchart;
+    chart->chart.type = CHART_TYPE_BAR;
+    chart->plotoptions.series_stacking = STACKING_NORMAL;
+
+    highchart__set_render_target(chart, "avepercent");
+    highchart__set_title(chart, "Average Percentage");
+
+    highchart__init_axis(chart, AXIS_X, 1);
+    highchart__set_axis_title(chart, AXIS_X, 0, "Bots");
+    highchart__set_axis_category(chart, AXIS_X, 0, CATEGORY_STR, nTable);
+    for(i = 0; i < nTable; ++i)
+      chart->xAxis[0].category_str[i] = str__dup(tablenames[i]);
+
+    highchart__init_axis(chart, AXIS_Y, 1);
+    highchart__set_axis_title(chart, AXIS_Y, 0, "percentage");
+
+    highchart__set_plotoption(chart, PLOTOPTIONS_DATALABELS, 1);
+    highchart__set_plotoption(chart, PLOTOPTIONS_MOUSETRACKING, 0);
+
+    highchart__set_series(chart, 2);
+    serie = chart->series; j = 0;
+    
+    highchart__set_serie_name(chart, j, "deviation");
+    highchart__set_serie(chart, SERIE_TYPE_NON, -1, j, SERIE_DATATYPE_FLOAT, nTable);
+    for(i = 0; i < nTable; ++i)
+      serie->data_float[i] = dev[i];
+
+    ++serie; ++j;
+    highchart__set_serie_name(chart, j, "average");
+    highchart__set_serie(chart, SERIE_TYPE_NON, -1, j, SERIE_DATATYPE_FLOAT, nTable);
+    for(i = 0; i < nTable; ++i)
+      serie->data_float[i] = ave[i];
+
+    SAFE_FREE(ave);
+    SAFE_FREE(dev);
 
     // generate html
     FILE* fp = fopen(argv[2], "w");
@@ -249,6 +325,10 @@ int main(int argc, char** argv)
     SAFE_FREE(tablenames);
     SAFE_FREE(nData);
     SAFE_FREE(datas);
+  }
+  else
+  {
+    fprintf(stderr, "No data in the database\n");
   }
 
   sqlite3_close(db);

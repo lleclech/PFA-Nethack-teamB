@@ -1,6 +1,6 @@
 CC=gcc
 CFLAGS=-I../include -Wall -Wextra
-LDFLAGS=-lsqlite3
+LDFLAGS=-lsqlite3 -lm
 EXE=statistiques
 SRCS=$(wildcard *.c)
 OBJS=$(patsubst %.c, %.o, ${SRCS})

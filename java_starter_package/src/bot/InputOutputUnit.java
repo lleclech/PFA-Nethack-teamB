@@ -33,6 +33,10 @@ class InputOutputUnit{
 		mySocket.setReuseAddress(true);
 		input = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
 		output = new PrintWriter(mySocket.getOutputStream());
+		String name = "NAME RandomBot";
+		Logger.println(name);
+		output.println(name);
+		output.flush();
 	}
 	
 	public void parseNextTurn(Bot b) throws IOException, UnknownPositionException{

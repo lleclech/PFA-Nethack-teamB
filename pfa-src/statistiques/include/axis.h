@@ -8,6 +8,9 @@
 #define CATEGORY_INT 0
 #define CATEGORY_STR 1
 
+#define AXIS_X 0
+#define AXIS_Y 1
+
 struct Axis {
 	//int reversed;
 	struct Title title;
@@ -33,6 +36,6 @@ struct Axis* axis__malloc();
 
 void axis__free(struct Axis* axis);
 
-void axis__fprint(FILE* fp, const struct Axis* axis, const char* name);
+void axis__fprint(FILE* fp, const struct Axis* axis, unsigned int ax, unsigned int nb);
 
 #endif /* __AXIS_H__ */

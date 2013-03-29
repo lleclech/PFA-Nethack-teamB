@@ -17,6 +17,12 @@
 int sockfd = -1;
 struct sockaddr bot_addr;
 socklen_t bot_addrlen;
+static int word_len(char * word)
+{
+	int l;
+	for (l = 0; word[l] != '\0' && word[l] != ' ' && word[l] != '\n'; l++) ;
+	return l;
+}
 
 static void open_socket (int port)
 {
@@ -34,6 +40,12 @@ static void open_socket (int port)
 	sockfd = accept(sock,&bot_addr, &bot_addrlen);
 	CHK(sockfd);
 	close(sock);
+	char msg[MAX_MSG_SIZE] ;
+	recv(sockfd,msg,MAX_MSG_SIZE,0);
+	int wlen = word_len(msg);
+	if (strncmp(msg, "NAME", wlen) == 0) {
+		mm_botname(msg + wlen + 1);	
+	}
 }
 
 void bot_end_game()
@@ -47,12 +59,6 @@ static int write_to_bot(char *msg)
 	return write(sockfd,msg,strlen(msg));
 }
 
-static int word_len(char * word)
-{
-	int l;
-	for (l = 0; word[l] != '\0' && word[l] != ' ' && word[l] != '\n'; l++) ;
-	return l;
-}
 
 /* Translate a direction in the bot format into a direction in Nethack format.
  * Return -1 if direction is invalid.

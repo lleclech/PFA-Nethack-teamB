@@ -44,4 +44,7 @@ const char * get_last_action_result();
 /* Add the specified char to the nethack kernel input */
 void mm_keypress(char c);
 
+/* Specify bot name for databse */
+void mm_botname(char *name);
+
 #endif

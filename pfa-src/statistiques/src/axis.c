@@ -80,30 +80,52 @@ void axis__free(struct Axis* axis)
 }
 
 
-void axis__fprint(FILE* STAT_FP, const struct Axis* axis, const char* name)
+void axis__fprint(FILE* STAT_FP, const struct Axis* axis, unsigned int ax, unsigned int nb)
 {
-	unsigned int i;
-	ATTRIBUTE_BEGIN(name);
-	title__fprint(fp, &(axis->title), "title");
+	unsigned int i, j;
+  const char* name;
 
-	if(axis->nbCategories > 0)
-	{
-		SEQUENCE_BEGIN("categories");
-		for (i = 0; i < axis->nbCategories; ++i)
-		{
-			if(i > 0)
-        STAT_PUTC(',');
-			switch(axis->categorytype)
-			{
-			case CATEGORY_INT:
-				STAT_PRINTF("%d", axis->category_int[i]);
-				break;
-			case CATEGORY_STR:
-				STAT_PRINTF("'%s'", axis->category_str[i]);
-				break;
-			}
-		}
-		SEQUENCE_END;
-	}
-	ATTRIBUTE_END;
+  if(ax == AXIS_X)
+    name = "xAxis";
+  else if(ax == AXIS_Y)
+    name = "yAxis";
+  else
+    return;
+
+  SEQUENCE_BEGIN(name);
+  
+  for(i = 0; i < nb; ++i, ++axis)
+  {
+    if(i > 0)
+      STAT_PUTC(',');
+
+    STAT_PUTC('{');
+
+    if(axis->nbCategories > 0)
+    {
+      SEQUENCE_BEGIN("categories");
+    
+      for(j = 0; j < axis->nbCategories; ++j)
+      {
+        if(j > 0)
+          STAT_PUTC(',');
+        switch(axis->categorytype)
+        {
+        case CATEGORY_INT:
+			  	STAT_PRINTF("%d", axis->category_int[j]);
+			  	break;
+			  case CATEGORY_STR:
+			  	STAT_PRINTF("'%s'", axis->category_str[j]);
+			  	break;
+        }
+      }
+      SEQUENCE_END;
+    }
+
+    title__fprint(STAT_FP, &(axis->title), "title");
+
+    STAT_PUTC('}');
+  }
+
+  SEQUENCE_END;
 }
