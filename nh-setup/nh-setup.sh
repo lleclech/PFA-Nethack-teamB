@@ -21,8 +21,7 @@ dl_nethack () {
     echo "Running NetHack's setup script... "
     cd $nhdir
     sh sys/unix/setup.sh
-    cd ..
-    patch -p0 < linux_install.patch
+    cd - 
     echo "Applying patches... "
     for i in `ls $patchdir`; do
         patch -p2 < $patchdir/$i;
