@@ -32,8 +32,7 @@ static void fifo_inc(int *i)
 void mm_botname(char *name, int name_len){
 	if(bot_name) 
 		free(bot_name);
-	bot_name = malloc(name_len);
-	strncpy(bot_name,name,name_len);
+	bot_name = strndup(name,name_len);
 }
 
 void middle_man_print_glyph(winid window,XCHAR_P x,XCHAR_P y,int glyph)
