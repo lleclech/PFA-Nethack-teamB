@@ -1,10 +1,9 @@
 CC=gcc
 
-INCLUDE = ../nh-setup/nethack-3.4.3/include/
+NHDIR= ../nh-setup/nethack-3.4.3
+INCLUDE = $(NHDIR)/include/
 CFLAGS=-Wall -Wextra -I $(INCLUDE)
 LFLAGS=
-NHDIR= ../nh-setup/nethack-3.4.3
-BOTDIR=bot
 all: pfa test bot_rw bot_sp
 
 export PFADIR=../../pfa-src
