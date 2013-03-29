@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "macros.h"
+
 char* str__dup(const char* src)
 {
 	char* dst;
@@ -10,7 +12,7 @@ char* str__dup(const char* src)
 	if(src == NULL)
 		return NULL;
 
-	dst = (char*)malloc(strlen(src) + 1);
+	dst = STAT_MALLOC(char, strlen(src) + 1);
 	if(dst != NULL)
 		strcpy(dst, src);
 

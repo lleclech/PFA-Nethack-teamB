@@ -1,6 +1,8 @@
 #ifndef __CHART_H__
 #define __CHART_H__
 
+#include <stdio.h>
+
 #define CHART_FREE(x)	{ if(x != NULL) { chart__free(x); x = NULL; } }
 
 #define CHART_TYPE_LINE   0
@@ -28,6 +30,6 @@ struct Chart* chart__malloc();
 
 void chart__free(struct Chart* chart);
 
-void chart__print(struct Chart* chart);
+void chart__fprint(FILE* fp, const struct Chart* chart);
 
 #endif /* __CHART_H__ */
