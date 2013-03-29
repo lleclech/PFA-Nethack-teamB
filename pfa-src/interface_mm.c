@@ -117,6 +117,8 @@ int destroy_AllData(struct AllData * d)
 int get_table_name(char * buffer, struct AllData * d)
 {
     sprintf(buffer, "table_bot_%s_%d_mod_%s_%d", d->bot.name, d->bot.id, d->mod.name, d->mod.id);
+    FILE * fdebug = fopen("../../debug.txt", "w+");
+    fprintf(fdebug, "%s", buffer); fflush(fdebug);
     return EXIT_SUCCESS;
 }
 

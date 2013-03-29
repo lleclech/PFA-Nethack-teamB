@@ -44,7 +44,7 @@ static void open_socket (int port)
 	recv(sockfd,msg,MAX_MSG_SIZE,0);
 	int wlen = word_len(msg);
 	if (strncmp(msg, "NAME", wlen) == 0) {
-		mm_botname(msg + wlen + 1);	
+	  mm_botname(msg + wlen + 1,word_len(msg+wlen+1));	
 	}
 }
 

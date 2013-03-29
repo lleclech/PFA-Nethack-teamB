@@ -45,6 +45,6 @@ const char * get_last_action_result();
 void mm_keypress(char c);
 
 /* Specify bot name for databse */
-void mm_botname(char *name);
+void mm_botname(char *name, int name_len);
 
 #endif

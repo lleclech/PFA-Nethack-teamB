@@ -29,11 +29,11 @@ static void fifo_inc(int *i)
 	*i=(*i)%MM_FIFO_LENGTH;
 }
 
-void mm_botname(char *name){
+void mm_botname(char *name, int name_len){
 	if(bot_name) 
 		free(bot_name);
-	bot_name = malloc(strlen(name));
-	strcpy(bot_name,name);
+	bot_name = malloc(name_len);
+	strncpy(bot_name,name,name_len);
 }
 
 void middle_man_print_glyph(winid window,XCHAR_P x,XCHAR_P y,int glyph)
@@ -103,7 +103,6 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 			assign_mod(d ,"Exploration", 0);
 			if(bot_name){
 				assign_bot(d ,bot_name, 1);
-				free(bot_name);
 			}
 			else
 				assign_bot(d ,"No_name", 1);
@@ -129,6 +128,8 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 			printf("Mean : %d\n", get_mean_on_table(db, table_name, "DEPTH"));
 			printf("Median : %d\n", get_median_on_table(db, table_name, "DEPTH"));
 			printf("Standard Deviation : %d\n", get_std_deviation_on_table(db, table_name, "DEPTH"));
+			if (bot_name)
+			  free(bot_name);
 			destroy_AllData(d);
 			
 			terminate(EXIT_SUCCESS);
