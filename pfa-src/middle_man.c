@@ -12,6 +12,7 @@
 
 char mm_map[81*21+1]; //(x y)
 char mm_cmdbuf[MM_FIFO_LENGTH]; //FIFO containing bot commands 
+char *bot_name = NULL;
 int mm_turn = 0;
 int mm_cmdtop = -1; //Command top pointer
 int mm_cmdtail = -1; //Command tail pointer
@@ -26,6 +27,13 @@ static void fifo_inc(int *i)
 {
 	(*i)++;
 	*i=(*i)%MM_FIFO_LENGTH;
+}
+
+void mm_botname(char *name){
+	if(bot_name) 
+		free(bot_name);
+	bot_name = malloc(strlen(name));
+	strcpy(bot_name,name);
 }
 
 void middle_man_print_glyph(winid window,XCHAR_P x,XCHAR_P y,int glyph)
@@ -48,6 +56,32 @@ void middle_man_print_glyph(winid window,XCHAR_P x,XCHAR_P y,int glyph)
 	realwindowprocs.win_print_glyph(window,x,y,glyph);
 }
 
+int get_id_party(void)
+{
+  int id_party;
+  char buffer[10] = "";
+  FILE * f_id_party = fopen("../../id_party.txt", "r+");
+
+  if (f_id_party == NULL)
+    {
+      f_id_party = fopen("../../id_party.txt", "w+");
+      fprintf(f_id_party, "1");
+      fclose(f_id_party);
+      return 0;
+    }
+
+  fgets(buffer, 10, f_id_party);
+  id_party = atoi(buffer);
+  fclose(f_id_party);
+  fopen("../../id_party.txt", "w+");
+
+  fprintf(f_id_party, "%d", id_party + 1);
+
+  fclose(f_id_party);
+
+  return id_party;
+}
+
 int middle_man_nh_poskey(int *x, int *y, int *mod){
 	int key;
 	if(mm_cmdtop == mm_cmdtail){
@@ -61,15 +95,24 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 			fclose(f);
 
 			MATH_LIST = create_list_nbrs();
-			void * db = init_DB("Netbot_highscores");
+			void * db = init_DB("../../Netbot_highscores");
 			char * table_name = malloc(100*sizeof(char)); // Name of the table where datas "d" are to be stored
 			struct AllData * d = init_AllData();
-			d->id_party = 42;
-			assign_mod(d ,"SEARCH_DOORS", 1);
-			assign_bot(d ,"Explorer", 1);
+			d->id_party = get_id_party();
+			printf("ID_PARTY = %d\n", d->id_party);
+			assign_mod(d ,"Exploration", 0);
+			if(bot_name){
+				assign_bot(d ,bot_name, 1);
+				free(bot_name);
+			}
+			else
+				assign_bot(d ,"No_name", 1);
 			assign_nb_door_level(d, mm_nb_sdoor); 
-			assign_nb_steps(d, MAX_TURNS);
+			printf("DOORS_GENERATED = %d\n", mm_nb_sdoor);
 			assign_nb_door_discovered(d, mm_disc_sdoors);
+			printf("DOORS_DISCOVERED = %d\n", mm_disc_sdoors);
+			d->depth = mm_depth;
+			printf("DEPTH_REACHED = %d\n", mm_depth);
 
 			write_into_database(d);
 			get_table_name(table_name, d); // Get right name of the table
@@ -82,10 +125,10 @@ int middle_man_nh_poskey(int *x, int *y, int *mod){
 			printf("Mean : %d\n", get_mean_on_table(db, table_name, "DOORDISC"));
 			printf("Median : %d\n", get_median_on_table(db, table_name, "DOORDISC"));
 			printf("Standard Deviation : %d\n", get_std_deviation_on_table(db, table_name, "DOORDISC"));
-			printf("Steps :\n");
-			printf("Mean : %d\n", get_mean_on_table(db, table_name, "STEPS"));
-			printf("Median : %d\n", get_median_on_table(db, table_name, "STEPS"));
-			printf("Standard Deviation : %d\n", get_std_deviation_on_table(db, table_name, "STEPS"));
+			printf("Depth :\n");
+			printf("Mean : %d\n", get_mean_on_table(db, table_name, "DEPTH"));
+			printf("Median : %d\n", get_median_on_table(db, table_name, "DEPTH"));
+			printf("Standard Deviation : %d\n", get_std_deviation_on_table(db, table_name, "DEPTH"));
 			destroy_AllData(d);
 			
 			terminate(EXIT_SUCCESS);

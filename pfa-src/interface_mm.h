@@ -48,6 +48,7 @@ struct AllData
   int door_lvl;         // Nombre total de portes dans le niveau généré
   int door_disc;    // Nombre de portes découvertes
   int steps;              // Nombre de pas effectués
+  int depth;
 };
 
 /*
