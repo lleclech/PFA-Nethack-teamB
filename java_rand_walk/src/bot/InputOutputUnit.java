@@ -33,7 +33,7 @@ class InputOutputUnit{
 		mySocket.setReuseAddress(true);
 		input = new BufferedReader(new InputStreamReader(mySocket.getInputStream()));
 		output = new PrintWriter(mySocket.getOutputStream());
-		String name = "NAME Advanced_random";
+		String name = "NAME AdvancedRandomBot";
 		Logger.println(name);
 		output.println(name);
 		output.flush();
