@@ -12,4 +12,6 @@
 
 Une des exigences du client était d'utiliser le langage C pour développer le projet. Nous avons fait le choix de gérer les résultats des parties avec le Système de gestion de base de données Sqlite. Ce choix était motivé par le besoin de stocker potentiellement les resultats de plusieurs milliers de partie et celui de produire des statistiques avec, une base de donnée nous permettant de récuperer les informations de manière très rapide.
 
-Pour l'affichage des statistiques, nous avons développé un module qui génère une page html et du code javascript. Ce choix s'est fait assez naturellement du fait de la souplesse du langage html et des nombreuses bibliothèques javascripts. 
+Pour l'affichage des statistiques, nous avons développé un module qui génère une page html et du code javascript. Ce choix s'est fait assez naturellement du fait de la souplesse du langage html et de l'existence de  nombreuses bibliothèques javascripts. 
+
+Nous avons décidé également d'introduire un langage de haut niveau entre le bot et le middle man. Cela permet d'une part de rendre le code des bots plus lisible que si les instructions envoyés étaient simplement les commandes Nethack, et d'autre part de vérifier que les instructions envoyées par le bot sont valides. 
