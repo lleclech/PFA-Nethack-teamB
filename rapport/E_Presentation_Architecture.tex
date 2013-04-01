@@ -4,7 +4,7 @@
 
 \begin{description}
 \item[Bot Handler: ] Le Bot Handler est la pour traduire le langage haut niveau utilisé par le bot en commande Nethack.
-\item[Middle Man: ] le Middle Man communique les instructions Nethack au noyau du jeu et et les messages du jeu au bot via le Bot Handler.
+\item[Middle Man: ] le Middle Man est l'intermédiaire entre le code noyau nethack et le code injecté pour les besoins du projet. Il communique de façon bidirectionnelle avec le Bot Handler et collecte les données statistiques.
 \item[Interface Middle Man: ] L'interface Middle Man transfert les statistiques et les caractéristiques d'une partie dans la base de donnée.
 \item[DB Manager :] Le DB Manager est un module contenant les fonctions de manipulation de la base de donnée.
 \item[Statistic Tools:] Ce module met en pages les informations contenues dans la base de donnée.  
