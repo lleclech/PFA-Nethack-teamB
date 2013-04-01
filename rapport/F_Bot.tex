@@ -47,9 +47,11 @@ END
 \section{Exemple de bots en java}
 
 Nous avons codés deux bots relativement simple en java. Ceux-ci possèdent un tronc commun important. 
-Le rôle d'un bot est de se connecter au jeu sur le port adéquat, et de lui envoyer son nom pour ammorcer le dialogue. Le jeu modifié lui répond alors par une carte du type décrit précédemment. Le bot est donc une boucle principale de réception de cette chaîne, d'analyse et de production de sortie. Nous avons dupliqué une grande partie de ce code, puisque la connection, l'analyse syntaxique de la carte, la production et l'envoi des messages sont des foctionnement universels aux bots pouvant jouer au jeu. Par ailleurs, les bots sont équipés d'un système de log qui peut être activé ou non afin d'en débogguer la sortie. 
+Le rôle d'un bot est de se connecter au jeu sur le port adéquat, et de lui envoyer son nom pour ammorcer le dialogue. Le jeu modifié lui répond alors par une carte du type décrit précédemment. 
 
-Nous distinguerons ensuite les deux algorithmes différents décrivant la logique de sélection du coup à jouer.
+Le bot est donc une boucle principale de réception de cette chaîne, d'analyse et de production de sortie. Nous avons dupliqué une grande partie de ce code, puisque la connection, l'analyse syntaxique de la carte, la production et l'envoi des messages sont des foctionnement universels aux bots pouvant jouer au jeu. Par ailleurs, les bots sont équipés d'un système de log qui peut être activé ou non afin d'en débogguer la sortie. 
+
+Nous distinguerons par la suite les deux algorithmes différents décrivant la logique de sélection du coup à jouer.
 
 \subsection{Diagramme de classe}
 
@@ -72,6 +74,8 @@ Voici une description rapide de la plupart des classes du bot:
 
 \subsection{Algorithme}
 
-Les deux bots sont des bots stochastiques. Tous deux tirent un dé pour déterminer si ils font ou non une recherche, sinon ils se déplacent. La différence d'algorithme réside dans la sélection de la direction du mouvement. Le premier bot choisi une direction au hasard parmis toutes celles disponibles, et la joue. Il ne maintient aucune donnée persistante sur les coups passés et se contente de la carte actuelle. Le second algorithme procède de la même façon, mais compte les passages qu'il effectue sur chaque case, et sélectionne uniquement parmis les cases où il est le moins passé. De cette façon, il évite de nombreux allers-retours ; les couloirs, par exemple, sont systématiquement parcourus sans perdre de mouvement, et les nouvelles issues sont plus rapidement explorées, ce qui crée une différence importante de performance entre les deux stratégies. 
+Les deux bots sont des bots stochastiques. Tous deux tirent un dé pour déterminer si ils font ou non une recherche, sinon ils se déplacent. La différence d'algorithme réside dans la sélection de la direction du mouvement. Le premier bot choisi une direction au hasard parmis toutes celles disponibles, et la joue. Il ne maintient aucune donnée persistante sur les coups passés et se contente de la carte actuelle.
+
+Le second algorithme procède de la même façon, mais compte les passages qu'il effectue sur chaque case, et sélectionne uniquement parmis les cases où il est le moins passé. De cette façon, il évite de nombreux allers-retours ; les couloirs, par exemple, sont systématiquement parcourus sans perdre de mouvement, et les nouvelles issues sont plus rapidement explorées, ce qui crée une différence importante de performance entre les deux stratégies. 
 
 \subsection{}
