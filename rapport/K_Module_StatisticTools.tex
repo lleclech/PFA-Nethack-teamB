@@ -1,1 +1,20 @@
 \section{Statistic Tools} 
+
+\subsection{Description et rôle dans le programme}
+Les fichiers prmath.c et math\_tools.c contiennent des fonctions utilisées pour établir des statistiques sur la base de données.\\
+L'idée générale est d'utiliser une structure List\_Nbrs pour stocker des entiers, puis d'utiliser les fonction implementées pour effectuer les calculs souhaités (moyenne, médian, ecart-type...).
+\subsection{Structure List\_Nbrs}
+\begin{verbatim}
+struct List\_Nbrs
+{
+  int * nbrs;
+  int nb\_elt;
+};
+\end{verbatim}
+La structure contient un tableau d'entiers alloué dynamiquement (int * nbrs), et un entier indiquant le nombre d'élément dans le tableau. Des fonction permettant d'ajouter et d'enlever un nombre de la liste sont aussi implémentées. Un pointeur vers une structure List\_Nbrs est passé en variable globale, pour des raisons qui seront détaillées dans les variables suivantes.
+\subsection{int math\_callback(void*, int, char **, char **)}
+La fonction math\_callback est utilisée au niveau des fonctions de la bibliothèque sqlite3 utilisée pour la gestion de la base de données. C'est la fonction qui est appelée par le programme juste après l'execution d'une instruction SQL au niveau de la base de donnée par les fonctions de sqlite3. On souhaite ici, dans le callback, stocker tous les nombres récupérés via l'appel SQL dans la structure List\_Nbrs. Il n'est pas possible de modifier les paramêtres du la fonction math\_callback, qui sont fixés par l'implémentation de la bibliothèque sqlite3. En conséquence, il est impossible de passer en argument un pointeur vers la structure List\_Nbrs que cette fonction devra remplir, d'où l'utilisation d'une variable globale qui permet de contourner cette difficulté. Il devient donc important de gérer les ajouts et la destruction de la structure avec rigueur, pour éviter de laisser des nombres non-pertinents dans la liste, ou une erreur de segmentation. Afin d'éviter ces erreurs, il est conseillé d'utiliser les fonction get\_xxx\_on\_table, qui prennent en charge la gestion de la liste de manière transparente pour l'utilisateur.
+\subsection{int get\_xxx(struct List\_Nbrs *)}
+Les fonction get\_xxx (avec xxx = median, mean ou std\_deviation) sont utilisées pour les calculs mathématiques sur une structure List\_Nbrs données.
+\subsection{int get\_xxx\_on\_table(void *, char *, char *)}
+Cette fonction va effectuer un calcul de mediane, moyenne ou écart-type, sur une colonne (passée en argument char *) d'une table (passée en argument char *) de la base de donnée passée en argument (void *). La fonction va d'abord vider le contenu du pointeur vers la la List\_Nbrs donné en variable globale. Puis, par un appel à la base de donnée en utilisant la fonction math\_callback, les données visées par les arguments seront stockée dans la liste. Un appel à la fonction get\_xxx associée permettra enfin d'obtenir le résultat souhaité, qui sera renvoyé après avoir libéré la zone mémoire occupée par la List\_Nbrs.
