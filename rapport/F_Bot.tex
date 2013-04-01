@@ -41,9 +41,24 @@ Le bot ne peut envoyer qu'un ordre par tour. Une fois celui-ci envoyé il faut d
 Lorsque le jeu reçoit un ordre, il l'applique, puis renvoie la carte mise à jour sous la forme d'une chaîne de caractère. Si l'on souhaite avoir un bot un peu évolué, il peut être interessant de la stocker. 
 
 la chaine de caractère envoyée par le jeu a pour forme:
-\begin{verbatim}
 
+\begin{verbatim}
+START
+DUNGEON_LEVEL 1
+MAP_HEIGHT 6
+MAP_WIDTH 10
+START MAP
+          
+   ----   
+  |...@+  
+  |....|  
+   ----   
+          
+END MAP
+END
 \end{verbatim}
+
+
 
 \section{Exemple d'un bot codé en java}
 
