@@ -19,9 +19,9 @@ struct AllData
 \end{verbatim}
 A chaque partie, une structure AllData est allouée dans le tas par le middleman. Puis les champs de la structure sont remplis selon les données de la partie (nombre de pas effectués, profondeur du donjon atteinte, etc...). L'identifiant de la partie est un entier, qui est incrémenté de 1 à chaque partie. Le champ mod contient le nom du mod utilisé (Exploration, Combat, ...), ainsi qu'un entier pouvant servir à identifier la version du mod. Le champ bot contient le nom du bot utilisé (RandomBot, AdvancedRandomBot, ...), ainsi qu'un entier pouvant servir à identifier la version du bot. La date est celle de l'ajout dans la base de donnée. Les autres champs caractérisent le résultat de la partie.
 \subsection{Fonctions utilisées}
-\subsubsection{struct AllData * init\_AllData(void)}
+\subsubsection*{struct AllData * init\_AllData(void)}
 Cette fonction alloue l'espace en mémoire de la structure, et initialise des champs à des valeurs non atteignables par le bot (nombre de pas négatif par exemple), afin de pouvoir repérer si un champ a été renseigné ou non par le middleman.
-\subsubsection{int get\_table\_name(char *, struct AllData *)}
+\subsubsection*{int get\_table\_name(char *, struct AllData *)}
 Une table est créée dans la base de donnée pour chaque combinaison mod-bot. Chaque table est nommée de la manière suivante : table\_bot\_''nom du bot''\_''identifiant du bot''\_mod\_''nom du mod''\_''identifiant du mod''. La fonction get\_table\_name permet d'écrire dans une chaîne passée en argument le nom de la table associée à la structure AllData passée en argument (pour écrire dans la bonne table de la base de données par exemple).
-\subsection{int write\_into\_database(struct AllData *)}
+\subsection*{int write\_into\_database(struct AllData *)}
 Cette fonction permet d'écrire dans la base de données les résultats obtenus pas le bot. La fonction vérifie d'abord que certains champs critiques aient bien été renseignés (nom du bot, nom du mod). Puis, la date d'ajout dans la base de donnée est récupérée, et la fonction génère le nom de la table dans laquelle les résultats devront être inscrits, via la fonction get\_table\_name. Ensuite, selon le nom du bot utilisé, la fonction écrit les données pertinentes dans la base de donnée, dans la table associée à la combinaison mod-bot utilisée pour la partie jouée.
