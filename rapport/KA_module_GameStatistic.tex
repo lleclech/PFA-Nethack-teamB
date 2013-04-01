@@ -1,0 +1,41 @@
+\section{Game Statistic}
+
+Après chaque partie, les informations de la partie sont enregistrée. Toutes les données sauvegardée dans la base de données permettent de calculer les donées statistiques liées au bot et nous permettent de comparer leurs performances dans un environnement de règle donné..
+
+Il existe plusieurs types de paramètre pour les statistiques:\\
+
+\begin{description}
+\item[Celui de bot]
+  \begin{itemize}
+  \item le type du bot, i.e., Algorithms/Strategies utilisées
+  \item les parametres du bot, i.e. paramètres de l'algo/du strategie
+  \item etc
+  \end{itemize}
+\item[Celui du jeu]
+  \begin{itemize}
+  \item Nombre de pas joue
+  \item carte joue
+  \item etc
+  \end{itemize}
+\end{description}
+
+
+2/ Util de statistique
+
+On peut représenter les statistiques de beaucoup de manière différentes, mais on priviligiera souvent une visualisation graphique, généralement plus claire.
+
+Nous avons considéré les possibilités suivantes:\\
+\begin{itemize}
+\item utiliser une bibliotheque php pour génerer l'image sur une page web
+\item utiliser la bibliothèque matplotlib du langage python
+\item utilisation d'une bibliothèque javascript
+\end{itemize}
+
+Nous avons privilégié la portabilité et un usage relativement simple, et nous avons donc choisis de génerer une page web au format html, dans laquelle les statistiques sont mis en page par du code javascript.
+
+Nous avons utilisé la bibliothèque Highchart qui est très puissante pour génerer des graphiques sur des pages internet. 
+
+Pour la réalisation, nous avons définis des structures javascripts pour les graphiques, les axes, les titres... Puis nous avons définis des fonctions pour allouer et libérer la mémoire, et pour enregistrer les données. 
+
+Notre outil prend une base de données et en extrait les données. Il génère ensuite un fichier html dont le nom est définis par l'utilisateur
+Pour integrer avec le jeu, notre utils statistique prendre une base de donnees qui est rempli avec les information des parties, et generer une fichier html. Le nom du fichier de base de donnee et du fichier HTML sont precise par l'utilisateur. En ouvrant le fichier HTML on a une premier chart qui compare les different bots sur leur pourcentages en moyen des ports caches trouves, avec l'ecart-type. Et puis pour chaque bot, on a un chart qui donne les detail pour chaque partie (port genere, port trouve, et le pourcentage). 
