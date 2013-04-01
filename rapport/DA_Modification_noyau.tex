@@ -1,0 +1,21 @@
+\chapter{Modification du noyau}
+
+Nous modifions le noyau de Nethack en fonction de nos besoins et de l'environnement (l'ensemble de règles) dans lequel on souhaite faire évoluer les bots. Pour cela, nous utilisons un système de patch que l'on applique avant la compilation du jeu. Voici la description des différents patch qui ont été crées.
+
+\section{Le patch middleman}
+
+Nethack n'a pas été conçu pour que des bots puissent y jouer. Nous avons donc du apporter des modification au noyau pour pouvoir y greffer des bots. Celle-ci sont installée via le patch middleman. les principales modifications sont l'inclusion des fonctions de middle\_man.h et [A COMPLETER].   
+
+\section{Simplification de l'environnement de jeu}
+
+Ces patchs désactivent certaines règles du jeu:
+\begin{description}
+\item[disable-hunger :] Ce patch supprime la faim dans le jeu.
+\item[disable-locks :] Ce patch empeche que les portes du jeu soient fermées a clé.
+\item[disable-monster :] Ce patch retire les monstre du jeu.
+\item[disable object :] Ce patch retire les objet du jeu (par example les baignoires).
+\item[disable-traps :] Ce patch retire les pièges du jeu.
+\end{description}
+
+Ces patchs sont relativement aisé a réaliser et il est possible d'en créer d'autre si l'on souhaite modifier differement le jeu.
+
