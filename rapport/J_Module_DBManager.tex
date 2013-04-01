@@ -1,5 +1,16 @@
 \section{DB Manager} 
 
-Le module DB MAnager est une simple interface permettant d'utiliser les fonction Fournie par le système de gestion de base de données SQLITE. Il s'agit d'une couche d'abstraction, permettant au besoin de changer de SGBD et donc d'augmenter la maintenabilité du code. 
+Le module DB MAnager est une simple interface permettant d'utiliser les fonction fournie par le système de gestion de base de données SQLITE. Il s'agit d'une couche d'abstraction, permettant au besoin de changer de SGBD et donc d'augmenter la maintenabilité du code. 
 
+le module possède plusieurs fonctions:
 
+\begin{description}
+\item[init\_DB :] permet de créer et/ou d'ouvrir une base de donnée.
+\item[create\_table :] permet de créer une nouvelle table dans la base de donnée choisie.
+\item[write\_DB :] permet d'écrire dans la base de donnée choisie.
+\item[search\_DB :] permet de chercher des inforamtion dans une base de données.
+\item[close\_DB :] Ferme une base de données.
+\item[delete\_DB :] supprime une base de données.
+\end{description}
+
+Ces fonctions utilisent directement la bibliothèque sqlite3 qui doit donc être préalablement installée. 
