@@ -72,7 +72,6 @@ int write_DB(void* db, char* name_table, char* attributs, char* values, int (*ca
   request = malloc(strlen(values) * sizeof(char) + strlen(name_table) *sizeof(char) + 100);
 
   sprintf(request,"INSERT INTO %s (%s) VALUES (%s);", name_table,attributs,values );
-  //printf("%s\n",request); Sven : C'est pas juste du debug ce printf ? Dans le doute je le vire...
 
 
   rc = sqlite3_exec(db,request,callback, 0, &zErrMsg);
@@ -122,7 +121,6 @@ int close_DB(void* db)
     return 0;
 
 }
-//fonction finie.
 
 int delete_DB(char* name_DB)
 {
@@ -133,12 +131,9 @@ int delete_DB(char* name_DB)
 
   system(cmd);
 
-  //if(stat(name_DB,&s) != 0)
-    // system(cmd);
-
   free(cmd);
 
   return 42;
 
 }
-//fonction finie.
+

@@ -35,7 +35,7 @@ Et voici les possibilité d'orientation des ordres:
 \item[NORTH\_WEST :] permet de viser en haut à gauche.
 \end{description}
 
-Le bot ne peut envoyer qu'un ordre par tour. Une fois celui-ci envoyé il faut donc se mettre a l'écoute du jeu qui va nous envoyer un certain nombre d'information (par exemple la carte du jeu).
+Le bot ne peut envoyer qu'un ordre par tour. Une fois celui-ci envoyé il faut donc se mettre a l'écoute du jeu qui va nous envoyer un certain nombre d'information (par exemple la carte du jeu). La liste des ordres peut-être modifiée via le Bot Handler.
 
 \subsection{Information renvoyée par le jeu}
 Lorsque le jeu reçoit un ordre, il l'applique, puis renvoie la carte mise à jour sous la forme d'une chaîne de caractère. Si l'on souhaite avoir un bot un peu évolué, il peut être interessant de la stocker. 
@@ -53,23 +53,23 @@ Nous avons codés deux bots relativement simple en java. L'un est completement a
 
 Voir l'annexe.
  
-\subsection{Description }
+\subsection{Description}
+
+Voici une description rapide de la plupart des classes du bot:
 
 \begin{description}
-\item[Map :]
-\item[Bot :]
-\item[InputOutputUnit :]
-\item[Square :]
-\item[SquareType :]
-\item[Protocole :]
-\item[StepMap :]
-\item[Direction :]
-\item[Information :]
-\item[Position :]
-\item[Variables :]
-\item[Direction :]
-\item[Logger :]
-\item[UnknownPositionException :]
-\item[LaunchBot :]
-
+\item[Map :] Cette classe permet de stocker et de manipuler la carte.
+\item[Bot :] Cette classe permet de programmer le comportement du bot.
+\item[InputOutputUnit :] Cette classe permet de gérer les connexions avec le Bot Handler.
+\item[SquareType :] Cette classe contient tout les types de case pouvant être présent sur la carte.
+\item[Protocole :] Cette classe contient les commandes à envoyer au Bot Handler.
+\item[StepMap :] Contient certaines methodes permettant d'ameliorer l'algorithme du bot.
+\item[Direction :] Cette classe contient des variables de directions.
+\item[Variables :] Cette classe contient des variables diverses (comme ACTION\_RESULT par exemple).
 \end{description} 
+
+\subsection{Algorithme}
+
+L'algorithme du bot est relativement simple, il se déplace de manière aléatoire sur la carte et garde en mémoire les cases déjà visitées. A chaque tour, le bot choisi une case parmi celle qu'il a le moins visité. 
+
+\subsection{}

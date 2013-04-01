@@ -1,39 +1,27 @@
-\section{Interface Middle Man} 
+\section{Interface MiddleMan} 
 
-Ce module s'occupe recuperer les informations interessantes d'une partie, les formates, et les stocke via le DB manager dans la base de donnée.
-Il est principalement composé d'une structure "AllData"permettant de ranger les informations d'une partie, et d'un ensemble de fonction
-qui recuperant les informations et les places dans "AllData".
-
-\subsection{AllData}
-
-Voici un exemple de structure AllData:
-
+\subsection{Description et rôle dans le programme}
+Ce module sert à interfacer le middleman avec la base de données. Il permet d'ajouter dans la base de données les statistiques de la partie, en prenant en charge la gestion de la base de donnée, qui est donc transparente pour le middleman.
+\subsection{La structure utilisée}
+Le module de statistiques utilise une structure ``struct AllData'', donc la déclaration est :\\
 \begin{verbatim}
 struct AllData
 {
   int id_party;
-  struct Mod_Info mod;       // Informations sur le mod utilisé
-  struct Bot_Info bot;       // Informations sur le bot utilisé
+  struct Mod_Info mod;
+  struct Bot_Info bot;
   struct Date date;
-  int door_lvl;         // Nombre total de portes dans le niveau généré
-  int door_disc;    // Nombre de portes découvertes
-  int steps;              // Nombre de pas effectués
+  int door_lvl;
+  int door_disc;
+  int steps;
+  int depth;
 };
 \end{verbatim}
-Cette structure contient toutes les informations que l'on souhaite sauvegarder dans la base de données. Il est à noter que cette structure correspond à un environnement de jeu et que si on décide de changer les informations a ranger dans la base de données, il faut modifier cette structure.
- 
-\subsection{Fonctions de récuperation}
-
-voici les fonctions de récuperation pour la structure AllData pris en exemple: 
-
-\begin{description}
-\item[assign\_nb\_door\_level :] Ecris le nombre de portes découvrables pendant la partie dans la structure de données
-
-\item[assign\_nb\_door\_discovered :] Ecris le nombre de portes découvertes pendant la partie dans la structure de données. 
-
-\item[assign\_nb\_steps :] Ecris le nombre de pas effectués pendant la partie dans la structure de données.
-
-\item[assign\_nb\_monsters\_generated :] Ecris le nombre de monstres générés pendant la partie dans la structure de données.
-
-\item[assign\_nb\_monsters\_killed :] Ecris le nombre de monstres tués pendant la partie dans la structure de données.
-\end{description}
+A chaque partie, une structure AllData est allouée dans le tas par le middleman. Puis les champs de la structure sont remplis selon les données de la partie (nombre de pas effectués, profondeur du donjon atteinte, etc...). L'identifiant de la partie est un entier, qui est incrémenté de 1 à chaque partie. Le champ mod contient le nom du mod utilisé (Exploration, Combat, ...), ainsi qu'un entier pouvant servir à identifier la version du mod. Le champ bot contient le nom du bot utilisé (RandomBot, AdvancedRandomBot, ...), ainsi qu'un entier pouvant servir à identifier la version du bot. La date est celle de l'ajout dans la base de donnée. Les autres champs caractérisent le résultat de la partie.
+\subsection{Fonctions utilisées}
+\subsubsection*{struct AllData * init\_AllData(void)}
+Cette fonction alloue l'espace en mémoire de la structure, et initialise des champs à des valeurs non atteignables par le bot (nombre de pas négatif par exemple), afin de pouvoir repérer si un champ a été renseigné ou non par le middleman.
+\subsubsection*{int get\_table\_name(char *, struct AllData *)}
+Une table est créée dans la base de donnée pour chaque combinaison mod-bot. Chaque table est nommée de la manière suivante : table\_bot\_''nom du bot''\_''identifiant du bot''\_mod\_''nom du mod''\_''identifiant du mod''. La fonction get\_table\_name permet d'écrire dans une chaîne passée en argument le nom de la table associée à la structure AllData passée en argument (pour écrire dans la bonne table de la base de données par exemple).
+\subsection*{int write\_into\_database(struct AllData *)}
+Cette fonction permet d'écrire dans la base de données les résultats obtenus pas le bot. La fonction vérifie d'abord que certains champs critiques aient bien été renseignés (nom du bot, nom du mod). Puis, la date d'ajout dans la base de donnée est récupérée, et la fonction génère le nom de la table dans laquelle les résultats devront être inscrits, via la fonction get\_table\_name. Ensuite, selon le nom du bot utilisé, la fonction écrit les données pertinentes dans la base de donnée, dans la table associée à la combinaison mod-bot utilisée pour la partie jouée.
