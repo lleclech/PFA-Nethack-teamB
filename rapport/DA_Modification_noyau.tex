@@ -4,7 +4,7 @@ Nous modifions le noyau de Nethack en fonction de nos besoins et de l'environnem
 
 \section{Le patch middleman}
 
-Nethack n'a pas été conçu pour que des bots puissent y jouer. Nous avons donc du apporter des modification au noyau pour pouvoir y greffer des bots. Celle-ci sont installée via le patch middleman. les principales modifications sont l'inclusion des fonctions de middle\_man.h et [A COMPLETER].   
+Nethack n'a pas été conçu pour que des bots puissent y jouer. Nous avons donc du apporter des modification au noyau pour pouvoir y greffer des bots. Celle-ci sont installée via le patch middleman. Les principales modifications sont l'appel aux fonctions d'installation du module middle man, et les modifications du makefile permettant d'intégrer les modules modifiés au jeu.   
 
 \section{Simplification de l'environnement de jeu}
 
@@ -17,5 +17,7 @@ Ces patchs désactivent certaines règles du jeu:
 \item[disable-traps :] Ce patch retire les pièges du jeu.
 \end{description}
 
-Ces patchs sont relativement aisé a réaliser et il est possible d'en créer d'autre si l'on souhaite modifier differement le jeu.
+Rassemblés, ces patchs permettent d'effectuer le mode de jeu de recherche de portes secrètes. Ces patchs peuvent être réutilisés, mais il peut être facile d'en créer un autre si l'on souhaite modifier différement le jeu.
+
+Le mode de jeu que nous étudierons par la suite sera le suivant : le but du sous-problème étudié est de découvrir le maximum de portes cachées en un nombre fixé de tours (nous avons choisi 10000). Cet objectif d'exploration simule une situation du jeu initial où le joueur cherche à explorer de façon maximale le donjon dans un temps limité. Nous évaluerons donc les bots sur leur capacité à trouver efficacement des portes sur le maximum de niveaux.
 
