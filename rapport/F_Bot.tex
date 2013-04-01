@@ -5,13 +5,10 @@ Les bots sont completement indépendants du jeu. Cela signife qu'ils peuvent êt
 \section{Développer un bot}
 
 \subsection{Etablir la communication avec Nethack}
-Le bot et Nethack communiquent via une socket dont le port est 4242 (le port est écrits en dur dans le code).
+Le bot et Nethack communiquent via une socket de type internet dont le port est 4242. Ce port est écrit en dur dans le code.
 
 \subsection{Envoyer des ordres}
 Le bot doit utiliser un langage haut niveau pour communiquer ses ordres au jeu.
-
-
-Voici les actions disponibles:
 
 \begin{description}
 \item[SEARCH :] permet de rechercher une porte secrète.
@@ -22,18 +19,7 @@ Voici les actions disponibles:
 \item[UP :] permet de monter des escalier.
 \end{description}
 
-Et voici les possibilité d'orientation des ordres:
-
-\begin{description}
-\item[NORTH :] permet de viser vers le haut.
-\item[NORTH\_EAST :] permet de viser en haut à droite.
-\item[EAST :] permet de viser à droite.
-\item[SOUTH\_EAST :] permet de viser en bas à droite.
-\item[SOUTH :] permet de viser en bas.
-\item[SOUTH\_WEST :] permet de viser en bas à gauche.
-\item[WEST :] permet de viser à gauche.
-\item[NORTH\_WEST :] permet de viser en haut à gauche.
-\end{description}
+Certains ordres nécessitent d'être suivi d'une direction pour être exécutés. Ces directions ont également été traduites, elle correspondent aux points cardinaux en anglais et en majuscules (NORTH, SOUTH\_WEST etc). Nous avons également ajouté UP et DOWN, qui correspondent aux escaliers du donjon et permettent d'accéder aux niveaux supérieurs et inférieurs.
 
 Le bot ne peut envoyer qu'un ordre par tour. Une fois celui-ci envoyé il faut donc se mettre a l'écoute du jeu qui va nous envoyer un certain nombre d'information (par exemple la carte du jeu). La liste des ordres peut-être modifiée via le Bot Handler.
 
