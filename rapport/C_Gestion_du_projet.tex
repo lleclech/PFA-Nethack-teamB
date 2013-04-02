@@ -8,9 +8,11 @@ Gérer un groupe de projet de sept personnes est évidemment assez complexe, nou
 
 Nous avons utilisé le gestionnaire de version git pour notre projet. Le gestionnaire permettant la création de branches et leur fusion de façon simple et automatique, nous avons eu l'idée d'utiliser git pour organiser le projet par branche. Une branche de base stable devait servir de version de référence, à partir de laquelle chacun crée sa propre branche de développement, pour développer une tâche donnée. Les branches devaient être fusionnées une fois la tache terminée. 
 
-\begin{tabular}{c}
-\includegraphics{Images/feature_branches.png}
-\end{tabular}
+\begin{figure}[h!]
+\center
+\includegraphics[width=30mm]{Images/feature_branches.png}
+\caption{developpemnt sur plusieurs branches}
+\end{figure}
 
 Cette organisation permettait d'individualiser les développements ; elle a le mérite d'être sûre, mais elle s'est révelée peu efficace : les branches mettant trop de temps à être fusionnées, la branche de départ est restée longtemps vide, ralentissant la circulation d'information et la mise au point entre les modules dépendants. Par la suite et renforcé par la réduction d'effectif, nous avons rassemblé tous les développements dans une unique branche de développement, fonctionnement simple mais qui s'est révélé suffisant pour nos besoins. 
 
