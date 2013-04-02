@@ -1,17 +1,38 @@
 \section{Bot Handler}
 
-%\paragraph{}
-Le bot handler est l'ensemble de fonctions permettant assurant le dialogue
-entre le bot et le noyau du jeu. Il s'agit d'un module C qui dépend uniquement de
-l'interface fournie par le middle man.
+Le bot handler est l'ensemble de fonctions permettant d'assurer le dialogue
+entre le bot et le noyau du jeu. Il s'agit d'un module C qui dépend uniquement de l'interface fournie par le middle man.
 
-%\paragraph{}
-Le bot handler assure la traduction des entrées clavier comprises par nethack en 
-leur équivalent en un langage plus lisible. Il balise et construit les messages destinés
-au bot, et assure la traduction inverse des messages qu'il reçoit de la part du bot.
 
-%\paragraph{}
+Le bot handler assure la traduction des entrées clavier comprises par nethack enleur équivalent en un langage plus lisible. Il balise et construit les messages destinés au bot, et assure la traduction inverse des messages qu'il reçoit de la part du bot.
+
+
 Le bot handler attend la connexion d'un bot sur un port réseau, constant dans le module.
 A chaque tour correspond l'envoi d'un message sur ce canal, puis une écoute de la réponse
 correspondante. La réponse est traduite en entrée clavier nethack puis transmises au middle man.
 
+\subsection{Réalisation}
+
+\subsubsection*{void open\_socket (int port)}
+
+Cette fonction permet d'initialiser la socket pour communiquer avec le bot.
+
+\subsubsection*{void bot\_end\_game()}
+
+Cette fonction ferme proprement la socket.
+
+\subsubsection*{int write\_to\_bot(char *msg)}
+
+Cette fonction permet d'envoyer les messages au bot.
+
+\subsubsection*{int botdir2nhdir(char * botdir)}
+
+Cette fonction assure la traduction des options de directions haut-niveau du bot en commande Nethack.
+
+\subsubsection*{void parse\_botcmd(char * botcmd)}
+
+Cette fonction assure la traduction des ordres haut-niveau du bot en commande Nethack.
+
+\subsubsection*{void bot\_turn(void)}
+
+Cette fonction s'occupe de transferer au bot les informations reçu du noyau Nethack. 

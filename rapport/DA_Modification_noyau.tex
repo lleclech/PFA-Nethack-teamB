@@ -21,3 +21,8 @@ Rassemblés, ces patchs permettent d'effectuer le mode de jeu de recherche de po
 
 Le mode de jeu que nous étudierons par la suite sera le suivant : le but du sous-problème étudié est de découvrir le maximum de portes cachées en un nombre fixé de tours (nous avons choisi 10000). Cet objectif d'exploration simule une situation du jeu initial où le joueur cherche à explorer de façon maximale le donjon dans un temps limité. Nous évaluerons donc les bots sur leur capacité à trouver efficacement des portes sur le maximum de niveaux.
 
+\subsection{Utilisation/maintenance modes de jeu}
+
+Le projet peut être extensible à plusieurs réductions possibles, différentes, du jeu initial. Afin de réduire le jeu à un sous-problème, des patchs peuvent être appliqués au sources. Ces patchs sont modulaires, peuvent être repris en totalité ou en partie selon le sous-problème abordé. Ils sont appliqués aux sources et permettent de bâtir, dans notre cas, le binaire du jeu où les monstres, les pièges et la faim sont désactivés.
+
+Pour rajouter de nouveaux modes de jeu, on peut de la même façon collecter des patchs (dont une partie peut être partagée avec d'autres modes) et les appliquer aux sources du jeu avant de le compiler, de façon automatique via le script d'installation.
